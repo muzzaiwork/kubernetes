@@ -218,6 +218,8 @@ $ kubectl exec -it deploy/spring-deployment -- printenv | grep DB_
 
 아래 그림은 사용자 요청이 Spring 서버를 거쳐 MySQL 데이터베이스에 도달하고, 데이터가 볼륨에 저장되는 전체 과정을 상세히 나타냅니다.
 
+![img.png](../img.png)
+
 ```mermaid
 flowchart TD
     subgraph Computer [Host Computer]
