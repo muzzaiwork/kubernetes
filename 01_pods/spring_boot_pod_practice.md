@@ -2,28 +2,27 @@
 
 앞서 실습한 Nginx 파드에 이어, 실제 웹 애플리케이션인 **Spring Boot**를 파드로 띄워보고 Nginx와의 차이점을 이해해 봅니다.
 
-## 1. Spring Boot 매니페스트 분석 (`spring-boot-pod.yaml`)
+## 1. Spring Boot 매니페스트 분석 (`spring-pod.yaml`)
 
-Spring Boot 애플리케이션을 위한 매니페스트 파일입니다.
+Spring Boot 애플리케이션을 위한 매니페스트 파일입니다. 로컬에서 빌드한 이미지를 사용하는 예시입니다.
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: spring-boot-pod
-  labels:
-    app: spring-boot
+  name: spring-pod
 spec:
   containers:
-    - name: spring-boot-container
-      image: ghcr.io/m88i/spring-boot-hello-world # 샘플 스프링 부트 이미지
+    - name: spring-container
+      image: spring-server            # 로컬에서 빌드한 이미지 이름
+      imagePullPolicy: Never          # 로컬 이미지 강제 사용 (중요)
       ports:
-        - containerPort: 8080 # 스프링 부트의 기본 포트
+        - containerPort: 8080         # 스프링 부트의 기본 포트
 ```
 
 ### 🔍 주요 포인트
 - **containerPort: 8080**: Spring Boot의 기본 포트인 8080을 사용합니다. Nginx(80)와 포트 번호가 다름에 유의하세요.
-- **labels**: 파드에 `app: spring-boot`라는 라벨을 붙였습니다. 라벨은 나중에 **Service**나 **Deployment**에서 특정 파드를 선택할 때 중요한 역할을 합니다.
+- **imagePullPolicy: Never**: 로컬 Docker 엔진에 있는 이미지를 사용하도록 설정합니다. (원격에서 찾지 않음)
 
 ---
 
@@ -96,18 +95,18 @@ $ kubectl get pods
 
 ---
 
-## 3. 실습 진행 (원격 이미지 버전)
+## 3. 실습 진행 (로컬 빌드 버전)
 
-이미 만들어진 공개 이미지를 먼저 사용해보고 싶다면 기존 매니페스트(`01_pods/spring-boot-pod.yaml`)를 적용하세요.
+직접 빌드한 이미지를 사용하여 파드를 생성하고 확인해 봅니다.
 
 ### ① 파드 생성
 ```bash
-kubectl apply -f 01_pods/spring-boot-pod.yaml
+kubectl apply -f 01_pods/spring-pod.yaml
 ```
 
 **실행 결과 (예시):**
 ```text
-pod/spring-boot-pod created
+pod/spring-pod created
 ```
 
 ### ② 상태 확인
@@ -118,20 +117,21 @@ kubectl get pods
 
 **실행 결과 (예시):**
 ```text
-NAME              READY   STATUS    RESTARTS   AGE
-nginx-pod         1/1     Running   0          25m
-spring-boot-pod   1/1     Running   0          20s
+NAME         READY   STATUS    RESTARTS   AGE
+nginx-pod    1/1     Running   0          25m
+spring-pod   1/1     Running   0          20s
 ```
 
 ### ③ 임시 접속 확인 (Port Forwarding)
 호스트의 8081 포트를 파드의 8080 포트로 연결해 봅니다.
 ```bash
-kubectl port-forward pod/spring-boot-pod 8081:8080
+kubectl port-forward pod/spring-pod 8081:8080
 ```
 
 **실행 결과 (예시):**
 ```text
 Forwarding from 127.0.0.1:8081 -> 8080
+```
 Forwarding from [::1]:8081 -> 8080
 ```
 이제 브라우저에서 `http://localhost:8081`에 접속하면 "Hello World!" 메시지를 확인할 수 있습니다.
@@ -188,9 +188,9 @@ spec:
 
 쿠버네티스 클러스터 안에서는 파드끼리 서로의 IP를 통해 통신할 수 있습니다. 
 
-1. 먼저 `spring-boot-pod`의 IP를 확인합니다.
+1. 먼저 `spring-pod`의 IP를 확인합니다.
    ```bash
-   kubectl get pod spring-boot-pod -o wide
+   kubectl get pod spring-pod -o wide
    ```
    *IP 예시: `10.1.0.7`*
 
