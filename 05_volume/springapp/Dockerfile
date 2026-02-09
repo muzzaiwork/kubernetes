@@ -1,6 +1,6 @@
-FROM openjdk:17-jdk
+FROM openjdk:17-jdk-slim
 
-# JAR 파일 경로 설정 (gradle 빌드 시 생성되는 경로)
-COPY build/libs/*SNAPSHOT.jar /app.jar
+# Gradle 빌드를 통해 생성된 JAR 파일을 컨테이너 내부의 app.jar로 복사합니다.
+COPY build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]
