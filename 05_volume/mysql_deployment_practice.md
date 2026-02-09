@@ -100,7 +100,25 @@ $ kubectl get pods -l app=mysql-db
 
 ### 3. 데이터베이스 접속 및 데이터 생성
 
-MySQL 파드 내부로 접속하여 새로운 데이터베이스를 생성해본다. (IntelliJ 등 GUI 도구에서 `localhost:30004`로 접속해도 동일하다.)
+쿠버네티스 서비스(NodePort: 30004)를 통해 외부에서 MySQL에 접속할 수 있다.
+
+#### 🖥️ IntelliJ IDEA Database 도구에서 접속하기
+
+IntelliJ의 Database 도구를 활용하면 GUI 환경에서 편리하게 DB를 관리할 수 있다.
+
+1.  **Host**: `localhost` (Docker Desktop 사용 시)
+2.  **Port**: `30004` (NodePort 번호)
+3.  **User**: `root`
+4.  **Password**: `password123` (Secret에 설정한 값)
+5.  **Database**: `kub-practice` (ConfigMap에 설정한 값)
+
+> **팁**: 연결 테스트 시 "Test Connection"을 눌러 성공 여부를 확인한다.
+
+---
+
+### 4. 파드 내부에서 데이터 생성 (CLI)
+
+MySQL 파드 내부로 직접 접속하여 새로운 데이터베이스를 생성해본다. (위에서 연결한 IntelliJ에서 SQL 문을 실행해도 동일하다.)
 
 ```bash
 # 파드 내부에서 MySQL 접속 및 DB 생성
