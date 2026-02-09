@@ -126,8 +126,8 @@ $ kubectl exec -it deployment/mysql-deployment -- mysql -u root -ppassword123 -e
 #### 1. 볼륨 연결 구조도
 ```mermaid
 graph TD
-    subgraph "Kubernetes Cluster"
-        subgraph "Pod (MySQL)"
+    subgraph K8s [Kubernetes Cluster]
+        subgraph MySQL_Pod [Pod MySQL]
             Container["MySQL Container"]
             MountPath["/var/lib/mysql (데이터 저장 경로)"]
             Container -- "1. Mounts to" --> MountPath
@@ -140,7 +140,7 @@ graph TD
         PVC -- "3. Bound to (by storageClassName)" --> PV
     end
 
-    subgraph "Physical Storage (Node/Host)"
+    subgraph Storage [Physical Storage Node/Host]
         HostPath["/mnt/data (실제 데이터 저장 위치)"]
     end
 

@@ -218,13 +218,13 @@ $ kubectl exec -it deploy/spring-deployment -- printenv | grep DB_
 
 ```mermaid
 flowchart LR
-    subgraph K8s["Kubernetes Cluster"]
-      A[Spring Pod (x3)] -- env.DB_HOST=mysql-service --> SVC[(mysql-service)]
-      A -. HTTP :8080 .- SSVC[(spring-service :30000)]
+    subgraph K8s [Kubernetes Cluster]
+      A[Spring Pod x3] -- "env.DB_HOST=mysql-service" --> SVC[(mysql-service)]
+      A -. "HTTP :8080" .- SSVC[(spring-service :30000)]
       SVC --> MYSQL[(MySQL Pod)]
     end
 
-    User((User)) -- http://localhost:30000 --> SSVC
+    User((User)) -- "http://localhost:30000" --> SSVC
 ```
 
 ---
