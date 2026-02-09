@@ -90,7 +90,7 @@ spec:
 $ kubectl apply -f 05_volume/mysql-secret.yaml
 $ kubectl apply -f 05_volume/mysql-config.yaml
 $ kubectl apply -f 05_volume/mysql-deployment.yaml
-$ kubectl apply -f 05_volume/mysql-service.yaml
+$ kubectl apply -f 05_volume/mysql-service-nodeport.yaml
 
 # 파드 실행 확인
 $ kubectl get pods -l app=mysql-db

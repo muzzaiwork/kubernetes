@@ -13,9 +13,12 @@
 
 ### 2. 서비스 매니페스트 수정 (`ClusterIP` 적용)
 
-`type`을 `ClusterIP`로 변경하고, 외부 노출 포트인 `nodePort` 설정을 제거합니다.
+보안을 위해 서비스 타입을 `ClusterIP`로 변경합니다. 실습의 편의를 위해 `NodePort` 버전과 `ClusterIP` 버전의 파일을 각각 준비했습니다.
 
-**mysql-service.yaml**
+- **NodePort 버전 (보안 취약)**: `05_volume/mysql-service-nodeport.yaml`
+- **ClusterIP 버전 (보안 강화)**: `05_volume/mysql-service-clusterip.yaml`
+
+**mysql-service-clusterip.yaml**
 ```yaml
 apiVersion: v1
 kind: Service
@@ -35,12 +38,14 @@ spec:
 
 ### 3. 설정 반영 및 확인
 
-기존 서비스를 삭제하고 새 설정을 적용합니다. 이후 Spring 서버가 바뀐 서비스 정보를 인식하도록 재시작합니다.
+기존의 NodePort 서비스를 삭제하고, ClusterIP 설정을 적용합니다.
 
 ```bash
-# 기존 서비스 삭제 및 재생성
+# 기존 서비스 삭제
 $ kubectl delete service mysql-service
-$ kubectl apply -f 05_volume/mysql-service.yaml
+
+# 보안이 강화된 ClusterIP 서비스 적용
+$ kubectl apply -f 05_volume/mysql-service-clusterip.yaml
 
 # Spring Deployment 재시작 (새로운 ClusterIP 인식)
 $ kubectl rollout restart deployment spring-deployment
@@ -70,6 +75,8 @@ Spring Boot는 클러스터 내부의 DNS(`mysql-service`)를 사용하므로, �
 ---
 
 ### 5. 그림으로 이해하기 (보안 강화 구조)
+
+![img.png](img.png)
 
 ```mermaid
 flowchart TD
