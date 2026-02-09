@@ -24,7 +24,7 @@ metadata:
 spec:
   type: NodePort # 외부 접속을 허용하는 서비스 타입
   selector:
-    app: backend-app # 'app: backend-app' 라벨을 가진 파드들을 타겟으로 지정
+    app: backend-app # 'app: backend-app' 라벨을 가진 파드들을 타겟으로 지정 (Deployment의 labels와 일치해야 함)
   ports:
     - protocol: TCP
       port: 8080       # 서비스 내부 포트
@@ -37,6 +37,9 @@ spec:
 1.  **NodePort**: 모든 노드의 특정 포트(여기서는 30000번)를 열어 외부 접속을 허용한다.
 2.  **ClusterIP**: 클러스터 내부에서만 통신 가능한 고정 IP를 부여한다. (기본값)
 3.  **LoadBalancer**: 클라우드 환경(AWS 등)에서 외부 로드밸런서를 자동으로 생성하여 연결한다.
+
+#### 💡 Selector와 Label의 관계 (중요)
+서비스의 `selector`에 적힌 `app: backend-app`은 디플로이먼트 매니페스트(`spring-deployment.yaml`)의 `template.metadata.labels` 항목에 정의된 값과 정확히 일치해야 한다. 쿠버네티스 서비스는 이 라벨을 보고 어떤 파드들에게 트래픽을 전달할지 결정하기 때문이다.
 
 ---
 
