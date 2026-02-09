@@ -15,7 +15,7 @@ public class DemoApplication {
 
     @GetMapping("/")
     public String home() {
-        System.out.println("Hello, World!"); // 추후 디버깅용
-        return "Hello, World!";
+        System.out.println("Version 1.0"); // 추후 디버깅용
+        return "Version 1.0";
     }
 }

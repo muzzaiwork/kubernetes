@@ -7,7 +7,7 @@ metadata:
 
 # Deployment 세부 정보
 spec:
-  replicas: 3 # 생성할 파드의 복제본 개수
+  replicas: 5 # 생성할 파드의 복제본 개수
   selector:
     matchLabels:
       app: backend-app # 아래에서 정의한 Pod 중 'app: backend-app'이라는 값을 가진 파드를 선택
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: spring-container # 컨테이너 이름
-          image: spring-server # 컨테이너를 생성할 때 사용할 이미지
+          image: spring-server:1.0 # 컨테이너를 생성할 때 사용할 이미지
           imagePullPolicy: IfNotPresent # 로컬에서 이미지를 먼저 가져온다. 없으면 레지스트리에서 가져온다.
           ports:
             - containerPort: 8080  # 컨테이너에서 사용하는 포트를 명시적으로 표현
