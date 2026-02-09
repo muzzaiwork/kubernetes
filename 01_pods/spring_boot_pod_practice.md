@@ -15,14 +15,14 @@ spec:
   containers:
     - name: spring-container
       image: spring-server            # 로컬에서 빌드한 이미지 이름
-      imagePullPolicy: Never          # 로컬 이미지 강제 사용 (중요)
+      imagePullPolicy: IfNotPresent   # 로컬 이미지 우선 사용 (중요)
       ports:
         - containerPort: 8080         # 스프링 부트의 기본 포트
 ```
 
 ### 🔍 주요 포인트
 - **containerPort: 8080**: Spring Boot의 기본 포트인 8080을 사용합니다. Nginx(80)와 포트 번호가 다름에 유의하세요.
-- **imagePullPolicy: Never**: 로컬 Docker 엔진에 있는 이미지를 사용하도록 설정합니다. (원격에서 찾지 않음)
+- **imagePullPolicy: IfNotPresent**: 로컬 Docker 엔진에 이미지가 있으면 원격에서 찾지 않고 로컬 이미지를 사용합니다.
 
 ---
 
@@ -78,7 +78,7 @@ spec:
   containers:
     - name: spring-container
       image: spring-server            # 로컬에서 빌드한 이미지 이름
-      imagePullPolicy: Never          # 로컬 이미지 강제 사용 (중요)
+      imagePullPolicy: IfNotPresent   # 로컬 이미지 우선 사용 (중요)
       ports:
         - containerPort: 8080
 ```
@@ -138,43 +138,67 @@ Forwarding from [::1]:8081 -> 8080
 
 ---
 
-## 4. 왜 ImagePullBackOff가 발생하나요? (중요)
+## 4. 왜 ImagePullBackOff가 발생하나요? (이미지 풀 정책)
 
-로컬에서 이미지를 빌드해 `spring-server`라는 이름으로 보관했는데, 파드 생성 후 `STATUS`에 `ImagePullBackOff`가 보일 수 있습니다. 대표 원인은 다음과 같습니다.
+이전에 Spring Boot 프로젝트를 이미지로 빌드해서 파드로 띄웠을 때, `ImagePullBackOff`라는 에러가 발생할 수 있습니다. 이는 쿠버네티스의 **이미지 풀 정책(Image Pull Policy)** 때문입니다.
 
-1) 기본 태그(latest)와 imagePullPolicy=Always
-- `image: spring-server`처럼 태그를 생략하면 기본값은 `latest`입니다.
-- 태그가 `latest`인 경우 Kubernetes의 기본 `imagePullPolicy`는 `Always`로 간주되어, 로컬에 이미지가 있어도 원격 레지스트리에서 이미지를 '항상' 당겨오려 시도합니다.
-- 로컬 레지스트리에 없는 `spring-server:latest`를 당겨오려다 실패 → `ImagePullBackOff`.
+### ① 이미지 풀 정책 (Image Pull Policy)이란?
+쿠버네티스가 매니페스트 파일을 읽어 파드를 생성할 때, 이미지를 어떻게 가져올(Pull) 것인지에 대한 규칙입니다.
 
-2) 로컬 이미지 접근 정책
-- Docker Desktop의 Kubernetes는 동일한 Docker 엔진을 사용하므로, 보통 `imagePullPolicy: IfNotPresent` 또는 `Never`로 설정하면 로컬 이미지를 사용할 수 있습니다.
+1. **`Always`**: 로컬에 이미지가 있더라도 무조건 원격 레지스트리(Docker Hub 등)에서 새로 가져옵니다.
+2. **`IfNotPresent`**: 로컬에 이미지가 있는지 먼저 확인하고, 없을 때만 원격에서 가져옵니다. (권장)
+3. **`Never`**: 무조건 로컬에 있는 이미지명만 사용하며 원격에서 가져오지 않습니다.
 
-해결 방법
-- 방법 A: 매니페스트에 `imagePullPolicy: Never`를 명시하여 로컬 이미지를 강제로 사용
-- 방법 B: 이미지에 latest가 아닌 버전 태그를 부여하고(`spring-server:v1`), `imagePullPolicy: IfNotPresent`로 두기
-- 방법 C: 이미지를 원격 레지스트리(e.g., Docker Hub, GHCR)에 푸시하고, `imagePullSecrets` 등을 설정해 정상 Pull되도록 구성
+### ② 기본 동작 방식 (Default Behavior)
+`imagePullPolicy`를 생략했을 때 쿠버네티스는 다음과 같이 판단합니다.
 
-예시 (방법 A)
+- 이미지 태그가 `:latest`이거나 아예 없는 경우: **`Always`**로 설정됨
+- 이미지 태그가 특정 버전(예: `:v1`)인 경우: **`IfNotPresent`**로 설정됨
+
+따라서 우리가 태그 없이 `image: spring-server`라고만 적으면 쿠버네티스는 `spring-server:latest`를 원격 저장소에서 찾으려 시도하고, 찾지 못해 `ImagePullBackOff` 에러를 띄우게 됩니다.
+
+### ③ 해결 방법
+로컬에서 빌드한 이미지를 사용하려면 다음과 같이 정책을 명시해 주어야 합니다.
+
 ```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: spring-pod
 spec:
   containers:
     - name: spring-container
       image: spring-server
-      imagePullPolicy: Never
-      ports:
-        - containerPort: 8080
+      imagePullPolicy: IfNotPresent
 ```
 
-`kubectl get pods`에서 `STATUS`가 `Running`이 되면 정상 기동입니다.
+정책을 수정한 후 기존 파드를 삭제하고 다시 생성하면 정상적으로 실행됩니다.
+
+```bash
+$ kubectl delete pod spring-pod
+$ kubectl apply -f 01_pods/spring-pod.yaml
+$ kubectl get pods
+```
 
 ---
 
-## 5. Nginx 파드 vs Spring Boot 파드 비교
+## 5. Spring Boot 서버 응답 확인하기
+
+서버가 정상적으로 기동되었다면 아래 두 가지 방법으로 응답을 확인할 수 있습니다.
+
+### 방법 1: 파드 내부에서 요청 보내기
+`kubectl exec`를 통해 파드 내부 쉘에 접속하여 직접 `curl`을 날려봅니다.
+```bash
+$ kubectl exec -it spring-pod -- bash 
+$ curl localhost:8080
+```
+
+### 방법 2: 포트 포워딩 활용하기
+로컬 PC의 특정 포트와 파드의 포트를 연결하여 브라우저에서 확인합니다.
+```bash
+$ kubectl port-forward pod/spring-pod 8081:8080
+```
+브라우저에서 `http://localhost:8081` 접속 시 응답을 확인할 수 있습니다.
+
+---
+
+## 6. Nginx 파드 vs Spring Boot 파드 비교
 
 | 항목 | Nginx 파드 | Spring Boot 파드 |
 | :--- | :--- | :--- |
