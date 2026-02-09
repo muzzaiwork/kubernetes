@@ -14,7 +14,8 @@ public class DemoApplication {
     }
 
     @GetMapping("/")
-    public String hello() {
-        return "Hello from My Spring Boot Pod!";
+    public String home() {
+        System.out.println("Hello, World!"); // 추후 디버깅용
+        return "Hello, World!";
     }
 }
