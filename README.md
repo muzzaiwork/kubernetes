@@ -41,6 +41,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 #### 🔹 Deployment & Service (디플로이먼트 & 서비스)
 - [x] [Deployment 개념 및 구조 이해](03_deployment_service/deployment_concept.md)
 - [x] [Deployment를 이용한 Spring Boot 스케일링 실습](03_deployment_service/spring_boot_deployment_practice.md)
+- [x] [Deployment를 활용한 서버 개수 조절 방법 (Scaling)](03_deployment_service/deployment_scaling.md)
 - [x] [Service 개념 이해](03_deployment_service/service_concept.md)
 - [x] [Service를 이용한 네트워크 노출 및 로드 밸런싱 실습](03_deployment_service/spring_boot_service_practice.md)
 - [ ] [**지금까지 배운 명령어 요약 정리 (Pod & Deployment)**](03_deployment_service/commands_summary_v2.md)
