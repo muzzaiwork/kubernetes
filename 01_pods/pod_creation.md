@@ -59,6 +59,13 @@ spec:                  # 상세 사양 (컨테이너 정보 등)
 # 호스트의 8080 포트를 파드의 80 포트로 연결
 kubectl port-forward pod/nginx-pod 8080:80
 ```
+
+**실행 결과:**
+```text
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+```
 이제 브라우저에서 `localhost:8080`으로 접속하면 Nginx 페이지가 보일 것입니다! (확인 후 터미널에서 `Ctrl + C`로 종료하세요.)
 
 #### 🖼️ Port Forwarding의 원리
@@ -89,10 +96,25 @@ graph LR
 kubectl exec -it nginx-pod -- bash
 ```
 
+**실행 결과:**
+```text
+root@nginx-pod:/#
+```
+
 파드 내부로 성공적으로 접속했다면, 파드 안에서 직접 Nginx에게 요청을 보내볼 수 있습니다.
 ```bash
 # --- Pod 내부 접속 상태 ---
 curl localhost:80
+```
+
+**실행 결과:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+...
+<h1>Welcome to nginx!</h1>
 ```
 
 #### 🖼️ 파드 내부 접속(exec) 및 내부 통신 원리
@@ -124,11 +146,20 @@ graph TD
 ```bash
 kubectl apply -f 01_pods/nginx-pod.yaml
 ```
+**실행 결과:**
+```text
+pod/nginx-pod created
+```
 
 ### ② 파드 상태 확인하기
 생성된 파드가 정상적으로 실행 중인지 확인합니다.
 ```bash
 kubectl get pods
+```
+**실행 결과:**
+```text
+NAME        READY   STATUS    RESTARTS   AGE
+nginx-pod   1/1     Running   0          30s
 ```
 - `STATUS`가 `Running`이면 정상입니다.
 
@@ -136,6 +167,23 @@ kubectl get pods
 파드의 IP 주소, 상태 로그 등 더 자세한 정보를 확인하고 싶을 때 사용합니다.
 ```bash
 kubectl describe pod nginx-pod
+```
+**실행 결과 (일부):**
+```text
+Name:             nginx-pod
+Namespace:        default
+Priority:         0
+Node:             docker-desktop/192.168.65.3
+Start Time:       Mon, 09 Feb 2026 11:25:26 +0900
+Labels:           <none>
+Status:           Running
+IP:               10.1.0.6
+Containers:
+  nginx-container:
+    Image:          nginx
+    Port:           80/TCP
+    State:          Running
+...
 ```
 
 ---
