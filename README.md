@@ -37,6 +37,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] Nest.js Pod 생성 실습 (예제: [01_pods/nest-pod.yaml](01_pods/nest-pod.yaml), 가이드: [01_pods/nest_js_pod_practice.md](01_pods/nest_js_pod_practice.md))
 - [x] Next.js Pod 생성 실습 (예제: [01_pods/next-app/next-pod.yaml](01_pods/next-app/next-pod.yaml), 가이드: [01_pods/next_js_pod_practice.md](01_pods/next_js_pod_practice.md))
 - [x] Pod 디버깅 하는 방법 (가이드: [01_pods/pod_debugging.md](01_pods/pod_debugging.md))
+- [x] 지금까지 배운 주요 명령어 정리 (가이드: [01_pods/kubectl_commands_summary.md](01_pods/kubectl_commands_summary.md))
 - [ ] Deployment를 이용한 스케일링 (`02_deployments/`)
 - [ ] Service를 이용한 네트워크 노출 (`03_services/`)
 
