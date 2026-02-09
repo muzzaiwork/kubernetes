@@ -39,7 +39,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] Pod 디버깅 하는 방법 (가이드: [01_pods/pod_debugging.md](01_pods/pod_debugging.md))
 - [x] 지금까지 배운 주요 명령어 정리 (가이드: [01_pods/kubectl_commands_summary.md](01_pods/kubectl_commands_summary.md))
 - [x] Deployment 개념 이해 (문서화 완료: [02_deployments/deployment_concept.md](02_deployments/deployment_concept.md))
-- [ ] Deployment를 이용한 스케일링 (`02_deployments/`)
+- [x] Deployment를 이용한 스케일링 (예제: [02_deployments/spring-deployment.yaml](02_deployments/spring-deployment.yaml), 가이드: [02_deployments/spring_boot_deployment_practice.md](02_deployments/spring_boot_deployment_practice.md))
 - [ ] Service를 이용한 네트워크 노출 (`03_services/`)
 
 ### 4단계: 고급 설정 및 관리
