@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: spring-config
 data:
-  my-account: wonkyeom
-  my-password: password123
+  my-account: jscode
