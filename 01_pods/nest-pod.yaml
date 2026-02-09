@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
     - name: nest-container
-      image: nest-server
+      image: nestapp
       imagePullPolicy: IfNotPresent
       ports:
         - containerPort: 3000

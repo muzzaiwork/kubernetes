@@ -12,7 +12,7 @@ Spring Boot에 이어, Node.js 기반의 프레임워크인 **Nest.js** 애플�
 $ npm i -g @nestjs/cli
 
 # 새 프로젝트 생성
-$ nest new nest-server
+$ nest new nestapp
 ```
 *생성 시 패키지 매니저는 `npm`을 권장합니다.*
 
@@ -20,7 +20,7 @@ $ nest new nest-server
 Docker 이미지로 만들기 전, 로컬에서 정상적으로 실행되는지 확인합니다.
 
 ```bash
-$ cd nest-server
+$ cd nestapp
 $ npm i
 $ npm run start
 ```
@@ -56,8 +56,8 @@ node_modules
 
 ### ③ 이미지 빌드
 ```bash
-$ docker build -t nest-server .
-$ docker image ls  # nest-server 이미지 생성 확인
+$ docker build -t nestapp .
+$ docker image ls  # nestapp 이미지 생성 확인
 ```
 
 ---
@@ -73,7 +73,7 @@ metadata:
 spec:
   containers:
     - name: nest-container
-      image: nest-server
+      image: nestapp
       imagePullPolicy: IfNotPresent  # 로컬 이미지를 우선 사용
       ports:
         - containerPort: 3000         # Nest.js 기본 포트
