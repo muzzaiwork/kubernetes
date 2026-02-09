@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nest-backend
+  template:
+    metadata:
+      labels:
+        app: nest-backend
+    spec:
+      containers:
+        - name: nest-container
+          image: nest-server:1.1 # 이미지 버전을 1.1로 수정
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
