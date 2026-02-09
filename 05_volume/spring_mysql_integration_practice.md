@@ -214,18 +214,72 @@ $ kubectl exec -it deploy/spring-deployment -- printenv | grep DB_
 
 ---
 
-## 5. 그림으로 이해하기
+## 5. 전체 구조도 (상세 아키텍처)
+
+아래 그림은 사용자 요청이 Spring 서버를 거쳐 MySQL 데이터베이스에 도달하고, 데이터가 볼륨에 저장되는 전체 과정을 상세히 나타냅니다.
 
 ```mermaid
-flowchart LR
-    subgraph K8s [Kubernetes Cluster]
-      A[Spring Pod x3] -- "env.DB_HOST=mysql-service" --> SVC[(mysql-service)]
-      A -. "HTTP :8080" .- SSVC[(spring-service :30000)]
-      SVC --> MYSQL[(MySQL Pod)]
+flowchart TD
+    subgraph Computer [Host Computer]
+        subgraph K8s [Kubernetes Cluster]
+            
+            subgraph Spring_Layer [Spring Boot Layer]
+                Spring_Deploy[Deployment: spring-deployment] --> Spring_RS[ReplicaSet]
+                Spring_RS --> Spring_Pod1[Pod]
+                Spring_RS --> Spring_Pod2[Pod]
+                Spring_RS --> Spring_Pod3[Pod]
+                
+                subgraph Spring_Pods [Spring Pods]
+                    Spring_Pod1
+                    Spring_Pod2
+                    Spring_Pod3
+                end
+            end
+
+            subgraph MySQL_Layer [MySQL Database Layer]
+                MySQL_Deploy[Deployment: mysql-deployment] --> MySQL_RS[ReplicaSet]
+                MySQL_RS --> MySQL_Pod[Pod]
+                
+                subgraph MySQL_Storage [Storage]
+                    PVC[PersistentVolumeClaim: mysql-pvc]
+                    PV[PersistentVolume: mysql-pv]
+                end
+
+                MySQL_Pod --> PVC
+                PVC --> PV
+            end
+
+            SSVC["Service: spring-service (NodePort)"]
+            MSVC["Service: mysql-service (ClusterIP/NodePort)"]
+
+            %% Traffic Flow
+            SSVC -- "port: 8080 -> targetPort: 8080" --> Spring_Pods
+            Spring_Pods -- "env.DB_HOST=mysql-service" --> MSVC
+            MSVC -- "port: 3306 -> targetPort: 3306" --> MySQL_Pod
+        end
+
+        User((User)) -- "http://localhost:30000 (nodePort)" --> SSVC
     end
 
-    User((User)) -- "http://localhost:30000" --> SSVC
+    %% Styling
+    style Computer fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style K8s fill:#eeeeee,stroke:#333,stroke-width:2px
+    style Spring_Layer fill:#e1f5fe,stroke:#01579b
+    style MySQL_Layer fill:#fff3e0,stroke:#e65100
+    style Spring_Pods fill:#ffffff,stroke:#01579b,stroke-dasharray: 5 5
+    style MySQL_Storage fill:#e8f5e9,stroke:#1b5e20
+    style SSVC fill:#e0f2f1,stroke:#004d40
+    style MSVC fill:#e0f2f1,stroke:#004d40
 ```
+
+| 구성 요소 | 설명 |
+| :--- | :--- |
+| **User** | 브라우저나 `curl`을 통해 `localhost:30000`으로 접속하는 외부 사용자입니다. |
+| **spring-service** | 외부의 `30000` 포트 요청을 받아 내부 파드들의 `8080` 포트로 전달(로드 밸런싱)합니다. |
+| **Spring Pods** | 실제 애플리케이션이 실행되는 3개의 복제본입니다. |
+| **mysql-service** | Spring 파드들이 `mysql-service`라는 이름으로 DB에 접속할 수 있게 해주는 내부 이정표입니다. |
+| **MySQL Pod** | 데이터베이스 엔진이 실행되는 파드입니다. |
+| **PV / PVC** | 파드가 재시작되어도 데이터가 사라지지 않도록 호스트의 물리 저장소와 연결된 볼륨 계층입니다. |
 
 ---
 
