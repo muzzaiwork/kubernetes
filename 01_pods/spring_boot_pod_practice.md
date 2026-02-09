@@ -27,52 +27,85 @@ spec:
 
 ---
 
-## 2. [심화] 직접 만든 Spring Boot 이미지 사용하기
+## 2. [심화] 직접 만든 Spring Boot 이미지 사용하기 (로컬 빌드 → 로컬 배포)
 
 기존에는 이미 만들어진 이미지를 사용했지만, 직접 작성한 코드를 Docker 이미지로 만들어서 띄울 수도 있습니다.
+아래는 최소 구성으로 빠르게 실습하는 코스입니다.
 
-### ① Dockerfile 작성
-Spring Boot 프로젝트 루트에 아래와 같이 `Dockerfile`을 작성합니다.
+### ① 프로젝트 위치
+- 예제 소스: `01_pods/springbootapp/src/main/java/com/example/demo/DemoApplication.java`
+- Gradle 설정: `01_pods/springbootapp/build.gradle`, `01_pods/springbootapp/settings.gradle`
+- Dockerfile: `01_pods/springbootapp/Dockerfile`
 
-```dockerfile
-# 1단계: 빌드용 이미지
-FROM eclipse-temurin:17-jdk-alpine AS build
-WORKDIR /app
-COPY . .
-RUN ./gradlew build -x test
+### ② Dockerfile 작성하기
+문서에서 사용하는 간단한 Dockerfile은 다음과 같습니다.
 
-# 2단계: 실행용 이미지
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+```docker
+FROM openjdk:17-jdk
+
+COPY build/libs/*SNAPSHOT.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 ```
 
-### ② 이미지 빌드
+### ③ Spring Boot 프로젝트 빌드하기
+- Gradle Wrapper가 없다면 `gradle wrapper`로 생성하거나, 로컬에 설치된 Gradle로 `gradle build`를 실행하세요.
+
 ```bash
-docker build -t my-spring-app:v1 .
+$ cd 01_pods/springbootapp
+$ ./gradlew clean build   # 또는: gradle clean build
 ```
 
-### ③ 쿠버네티스 매니페스트 수정
-직접 만든 이미지를 사용하도록 `image` 필드를 수정합니다.
+### ④ Dockerfile을 바탕으로 이미지 빌드하기
+```bash
+$ docker build -t spring-server .
+```
+
+### ⑤ 이미지가 잘 생성됐는지 확인하기
+```bash
+$ docker image ls
+```
+
+### ⑥ 매니페스트 파일 작성하기 (로컬 이미지 사용)
+로컬에서 빌드한 이미지를 그대로 사용하려면 다음과 같이 매니페스트를 작성합니다.
+
+`01_pods/spring-pod.yaml`
 ```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod
 spec:
   containers:
-    - name: spring-boot-container
-      image: my-spring-app:v1  # 직접 빌드한 이미지 이름
-      imagePullPolicy: Never    # 로컬 이미지를 우선 사용하도록 설정 (Docker Desktop 환경)
+    - name: spring-container
+      image: spring-server            # 로컬에서 빌드한 이미지 이름
+      imagePullPolicy: Never          # 로컬 이미지 강제 사용 (중요)
+      ports:
+        - containerPort: 8080
+```
+
+### ⑦ 매니페스트 파일을 기반으로 파드(Pod) 생성하기
+```bash
+$ kubectl apply -f 01_pods/spring-pod.yaml
+```
+
+### ⑧ 파드(Pod)가 잘 생성됐는지 확인
+```bash
+$ kubectl get pods
 ```
 
 ---
 
-## 3. 실습 진행
+## 3. 실습 진행 (원격 이미지 버전)
+
+이미 만들어진 공개 이미지를 먼저 사용해보고 싶다면 기존 매니페스트(`01_pods/spring-boot-pod.yaml`)를 적용하세요.
 
 ### ① 파드 생성
 ```bash
 kubectl apply -f 01_pods/spring-boot-pod.yaml
 ```
 
-**실행 결과:**
+**실행 결과 (예시):**
 ```text
 pod/spring-boot-pod created
 ```
@@ -83,7 +116,7 @@ Spring Boot는 Java 애플리케이션이므로 Nginx보다 기동 시간이 조
 kubectl get pods
 ```
 
-**실행 결과:**
+**실행 결과 (예시):**
 ```text
 NAME              READY   STATUS    RESTARTS   AGE
 nginx-pod         1/1     Running   0          25m
@@ -96,7 +129,7 @@ spring-boot-pod   1/1     Running   0          20s
 kubectl port-forward pod/spring-boot-pod 8081:8080
 ```
 
-**실행 결과:**
+**실행 결과 (예시):**
 ```text
 Forwarding from 127.0.0.1:8081 -> 8080
 Forwarding from [::1]:8081 -> 8080
@@ -105,7 +138,43 @@ Forwarding from [::1]:8081 -> 8080
 
 ---
 
-## 4. Nginx 파드 vs Spring Boot 파드 비교
+## 4. 왜 ImagePullBackOff가 발생하나요? (중요)
+
+로컬에서 이미지를 빌드해 `spring-server`라는 이름으로 보관했는데, 파드 생성 후 `STATUS`에 `ImagePullBackOff`가 보일 수 있습니다. 대표 원인은 다음과 같습니다.
+
+1) 기본 태그(latest)와 imagePullPolicy=Always
+- `image: spring-server`처럼 태그를 생략하면 기본값은 `latest`입니다.
+- 태그가 `latest`인 경우 Kubernetes의 기본 `imagePullPolicy`는 `Always`로 간주되어, 로컬에 이미지가 있어도 원격 레지스트리에서 이미지를 '항상' 당겨오려 시도합니다.
+- 로컬 레지스트리에 없는 `spring-server:latest`를 당겨오려다 실패 → `ImagePullBackOff`.
+
+2) 로컬 이미지 접근 정책
+- Docker Desktop의 Kubernetes는 동일한 Docker 엔진을 사용하므로, 보통 `imagePullPolicy: IfNotPresent` 또는 `Never`로 설정하면 로컬 이미지를 사용할 수 있습니다.
+
+해결 방법
+- 방법 A: 매니페스트에 `imagePullPolicy: Never`를 명시하여 로컬 이미지를 강제로 사용
+- 방법 B: 이미지에 latest가 아닌 버전 태그를 부여하고(`spring-server:v1`), `imagePullPolicy: IfNotPresent`로 두기
+- 방법 C: 이미지를 원격 레지스트리(e.g., Docker Hub, GHCR)에 푸시하고, `imagePullSecrets` 등을 설정해 정상 Pull되도록 구성
+
+예시 (방법 A)
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-pod
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 8080
+```
+
+`kubectl get pods`에서 `STATUS`가 `Running`이 되면 정상 기동입니다.
+
+---
+
+## 5. Nginx 파드 vs Spring Boot 파드 비교
 
 | 항목 | Nginx 파드 | Spring Boot 파드 |
 | :--- | :--- | :--- |
