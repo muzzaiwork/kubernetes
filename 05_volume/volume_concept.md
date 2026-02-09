@@ -39,7 +39,7 @@ graph TD
 graph TD
     subgraph "Worker Node"
         subgraph "Pod"
-            Container[Container]
+            Container["Container"]
         end
         Path["/mnt/data (Node Path)"]
     end
