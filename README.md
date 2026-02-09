@@ -57,7 +57,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [ ] Ingress (외부 트래픽 제어)
 - [x] [Volume 개념 이해 (PV, PVC)](05_volume/volume_concept.md)
 - [x] [MySQL Deployment 실습 (데이터 휘발성 확인)](05_volume/mysql_deployment_practice.md)
-- [ ] Storage 실습 (Volume, PV, PVC)
+- [x] [볼륨(Volume)을 활용해 MySQL 데이터 보존하기 (PV, PVC)](05_volume/mysql_persistence_practice.md)
 
 ### 5단계: 운영 및 모니터링
 - [ ] 리소스 제한 (Requests & Limits)
