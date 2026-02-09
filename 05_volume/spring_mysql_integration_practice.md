@@ -293,6 +293,69 @@ flowchart TD
 
 ---
 
+## 7. 만약 MySQL과 연결이 제대로 되지 않았다면?
+
+데이터베이스 연결 정보(비밀번호 등)가 잘못되었을 때 어떤 현상이 발생하는지 확인하고 해결하는 방법을 알아봅니다.
+
+### 1) 매니페스트 파일 수정 (오류 유도)
+일부러 틀린 비밀번호를 설정하여 연결 실패를 유도해봅니다.
+
+**spring-deployment.yaml**
+```yaml
+...
+          env:
+            - name: DB_PASSWORD
+              value: "wrong-password" # 일부러 틀린 비밀번호 입력
+...
+```
+
+### 2) 설정 반영 및 재시작
+```bash
+$ kubectl apply -f 05_volume/spring-deployment.yaml
+$ kubectl rollout restart deployment spring-deployment
+```
+
+### 3) 상태 확인 및 에러 분석
+파드의 상태를 확인하면 정상적으로 기동되지 않는 것을 볼 수 있습니다.
+
+```bash
+$ kubectl get pods
+```
+
+**[에러 메시지 확인]**
+`kubectl logs` 명령어를 통해 상세한 에러 로그를 확인하면 DB 접속 권한 오류(`Access denied`) 메시지를 발견할 수 있습니다.
+
+```bash
+$ kubectl logs [파드명]
+```
+
+![connection_error_logs](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/bf359aae-d41d-473a-941a-cf30f75b86f5/image.png)
+
+### 4) 다시 올바른 정보로 복구
+비밀번호를 원래대로(`password123`) 수정하고 다시 배포합니다.
+
+**spring-deployment.yaml**
+```yaml
+...
+          env:
+            - name: DB_PASSWORD
+              value: "password123" # 올바른 비밀번호로 수정
+...
+```
+
+```bash
+$ kubectl apply -f 05_volume/spring-deployment.yaml
+$ kubectl rollout restart deployment spring-deployment
+```
+
+정상적으로 `Running` 상태가 되는 것을 확인합니다.
+
+```bash
+$ kubectl get pods
+```
+
+---
+
 ### ✅ 마무리
 - Spring Boot 서버가 쿠버네티스에서 실행 중인 MySQL과 서비스 디스커버리(`mysql-service`)를 통해 안정적으로 연동됨을 확인했다.
 - 스케일 아웃(레플리카 3) 상황에서도 동일한 설정으로 DB에 접근 가능하다.
