@@ -33,9 +33,9 @@ graph LR
         Service -- "트래픽 분산" --> Pod3
         
         subgraph "Pods"
-            Pod1[Pod: backend-1<br/>(label: app=backend-app)]
-            Pod2[Pod: backend-2<br/>(label: app=backend-app)]
-            Pod3[Pod: backend-3<br/>(label: app=backend-app)]
+            Pod1["Pod: backend-1<br/>(label: app=backend-app)"]
+            Pod2["Pod: backend-2<br/>(label: app=backend-app)"]
+            Pod3["Pod: backend-3<br/>(label: app=backend-app)"]
         end
     end
 ```

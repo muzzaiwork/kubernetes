@@ -38,14 +38,12 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] [Pod 디버깅 가이드 (describe, logs, exec)](02_pods/pod_debugging.md)
 - [x] [**주요 kubectl 명령어 요약 정리**](02_pods/kubectl_commands_summary.md)
 
-#### 🔹 Deployment (디플로이먼트)
-- [x] [Deployment 개념 및 구조 이해](03_deployments/deployment_concept.md)
-- [x] [Deployment를 이용한 Spring Boot 스케일링 실습](03_deployments/spring_boot_deployment_practice.md)
-
-#### 🔹 Service (서비스)
-- [x] [Service 개념 이해](04_services/service_concept.md)
-- [ ] Service를 이용한 네트워크 노출 및 로드 밸런싱 (`04_services/`)
-- [ ] [**지금까지 배운 명령어 요약 정리 (Pod & Deployment)**](04_services/commands_summary_v2.md)
+#### 🔹 Deployment & Service (디플로이먼트 & 서비스)
+- [x] [Deployment 개념 및 구조 이해](03_deployment_service/deployment_concept.md)
+- [x] [Deployment를 이용한 Spring Boot 스케일링 실습](03_deployment_service/spring_boot_deployment_practice.md)
+- [x] [Service 개념 이해](03_deployment_service/service_concept.md)
+- [ ] Service를 이용한 네트워크 노출 및 로드 밸런싱 (`03_deployment_service/`)
+- [ ] [**지금까지 배운 명령어 요약 정리 (Pod & Deployment)**](03_deployment_service/commands_summary_v2.md)
 
 ### 4단계: 고급 설정 및 관리
 - [ ] ConfigMap & Secret (설정 관리)

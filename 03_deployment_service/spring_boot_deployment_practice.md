@@ -70,7 +70,7 @@ $ kubectl get pods # 삭제 확인
 
 매니페스트 파일을 클러스터에 적용한다.
 ```bash
-$ kubectl apply -f 03_deployments/spring-deployment.yaml
+$ kubectl apply -f 03_deployment_service/spring-deployment.yaml
 ```
 
 ---
