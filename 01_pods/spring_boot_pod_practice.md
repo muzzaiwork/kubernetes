@@ -142,6 +142,8 @@ Forwarding from [::1]:8081 -> 8080
 
 이전에 Spring Boot 프로젝트를 이미지로 빌드해서 파드로 띄웠을 때, `ImagePullBackOff`라는 에러가 발생할 수 있습니다. 이는 쿠버네티스의 **이미지 풀 정책(Image Pull Policy)** 때문입니다.
 
+- 상세 설명: [이미지 풀 정책 이해하기](../01_concepts/image_pull_policy.md)
+
 ### ① 이미지 풀 정책 (Image Pull Policy)이란?
 쿠버네티스가 매니페스트 파일을 읽어 파드를 생성할 때, 이미지를 어떻게 가져올(Pull) 것인지에 대한 규칙입니다.
 

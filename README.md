@@ -20,6 +20,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 ### 1단계: 기본 개념 파악
 - [x] 컨테이너와 쿠버네티스의 관계 (문서화 완료: `01_concepts/introduction.md`)
 - [x] 매니페스트 파일의 이해 (문서화 완료: `01_concepts/manifest.md`)
+- [x] 이미지 풀 정책(ImagePullPolicy) 이해 (문서화 완료: `01_concepts/image_pull_policy.md`)
 - [ ] 쿠버네티스 아키텍처 (Control Plane, Worker Node)
 - [ ] 기본 오브젝트 (Pod, Service, Deployment)
 
