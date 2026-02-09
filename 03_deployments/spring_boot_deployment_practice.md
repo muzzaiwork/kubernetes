@@ -70,7 +70,7 @@ $ kubectl get pods # 삭제 확인
 
 매니페스트 파일을 클러스터에 적용한다.
 ```bash
-$ kubectl apply -f 02_deployments/spring-deployment.yaml
+$ kubectl apply -f 03_deployments/spring-deployment.yaml
 ```
 
 ---
@@ -82,21 +82,48 @@ $ kubectl apply -f 02_deployments/spring-deployment.yaml
 ```bash
 # 디플로이먼트 확인
 $ kubectl get deployment
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+spring-deployment   3/3     3            3           20s
 
 # 레플리카셋 확인 (디플로이먼트가 생성함)
 $ kubectl get replicaset
+NAME                           DESIRED   CURRENT   READY   AGE
+spring-deployment-68cc49885b   3         3         3       22s
 
 # 파드 확인 (레플리카셋이 생성함)
 $ kubectl get pods
+NAME                                 READY   STATUS    RESTARTS   AGE
+spring-deployment-68cc49885b-4qptv   1/1     Running   0          25s
+spring-deployment-68cc49885b-6z5lw   1/1     Running   0          25s
+spring-deployment-68cc49885b-n8v99   1/1     Running   0          25s
 ```
-
-![Deployment Result](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/4f5e9ce4-4351-42ec-aa9e-845442be047c/359923ea-bd9f-4a95-bf9c-80e004f1e8f2.png)
 
 ---
 
 ### ✅ 전체 구조 파악
 
-![Architecture](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/4a0ba65b-7081-4170-9ecf-912b1a521f4d/image.png)
+```mermaid
+graph TD
+    subgraph "Kubernetes Cluster"
+        Deploy[Deployment: spring-deployment]
+        RS[ReplicaSet: spring-deployment-xxxx]
+        
+        subgraph "Pods"
+            Pod1[Pod: spring-deployment-xxxx-1]
+            Pod2[Pod: spring-deployment-xxxx-2]
+            Pod3[Pod: spring-deployment-xxxx-3]
+        end
+        
+        Deploy --> RS
+        RS --> Pod1
+        RS --> Pod2
+        RS --> Pod3
+    end
+
+    User((사용자)) -. "트래픽 분산 필요" .-> Pod1
+    User -. "트래픽 분산 필요" .-> Pod2
+    User -. "트래픽 분산 필요" .-> Pod3
+```
 
 백엔드 서버 3개를 각각의 파드에 띄웠다. 하지만 실제 서비스 시에는 사용자 요청을 이 3개의 서버에 골고루 나누어주어야 한다.
 

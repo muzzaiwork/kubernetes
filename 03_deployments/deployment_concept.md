@@ -39,5 +39,3 @@ graph TD
     - **레플리카(Replica)**: 복제본
     - **레플리카셋(ReplicaSet)**: 복제본끼리의 묶음
 - **파드(Pod)**: 실제 애플리케이션 컨테이너가 실행되는 최소 단위이다.
-
-![Deployment Structure](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/bce2d038-2cb4-4f9a-98ff-9ff99893fa02/image.png)

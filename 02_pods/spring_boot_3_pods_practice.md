@@ -22,7 +22,7 @@
 이번 실습에서는 Spring Boot 서버를 3대로 늘리는 **수평 확장(Scale-out)** 상황을 가정해 본다.
 
 1. **Spring Boot 프로젝트 구성**
-    - `01_pods/springbootapp` 디렉토리의 프로젝트를 사용한다.
+    - `02_pods/springbootapp` 디렉토리의 프로젝트를 사용한다.
     - `DemoApplication.java`에 간단한 컨트롤러를 작성한다.
 
     **AppController (DemoApplication.java)**

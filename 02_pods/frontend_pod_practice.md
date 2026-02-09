@@ -4,7 +4,7 @@
 
 ## 1. 정적 자원 및 Dockerfile 준비
 
-실습을 위해 `01_pods/frontend/` 디렉토리에 다음 파일들을 준비합니다.
+실습을 위해 `02_pods/frontend/` 디렉토리에 다음 파일들을 준비합니다.
 
 ### index.html
 Nginx의 기본 설정에 따라 메인 페이지 파일명은 `index.html`이어야 합니다.
@@ -46,7 +46,7 @@ COPY ./ /usr/share/nginx/html
 
 ```bash
 # frontend 디렉토리 내에서 빌드
-$ docker build -t my-web-server 01_pods/frontend/
+$ docker build -t my-web-server 02_pods/frontend/
 ```
 
 이미지가 잘 생성되었는지 확인합니다.
@@ -58,7 +58,7 @@ $ docker image ls my-web-server
 
 ## 3. 매니페스트 파일 작성
 
-`01_pods/web-server-pod.yaml` 파일을 작성하여 방금 만든 이미지를 사용하는 파드를 정의합니다.
+`02_pods/web-server-pod.yaml` 파일을 작성하여 방금 만든 이미지를 사용하는 파드를 정의합니다.
 
 ```yaml
 apiVersion: v1
@@ -81,7 +81,7 @@ spec:
 매니페스트 파일을 기반으로 파드를 생성합니다.
 
 ```bash
-$ kubectl apply -f 01_pods/web-server-pod.yaml 
+$ kubectl apply -f 02_pods/web-server-pod.yaml 
 ```
 
 파드가 정상적으로 생성되고 `Running` 상태인지 확인합니다.

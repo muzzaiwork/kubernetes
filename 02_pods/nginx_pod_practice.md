@@ -144,7 +144,7 @@ graph TD
 ### ① 파드 생성하기
 터미널에서 아래 명령어를 입력하여 YAML 파일에 정의된 파드를 생성한다.
 ```bash
-kubectl apply -f 01_pods/nginx-pod.yaml
+kubectl apply -f 02_pods/nginx-pod.yaml
 ```
 **실행 결과:**
 ```text
@@ -192,7 +192,7 @@ Containers:
 
 실습이 끝난 후 파드를 삭제하려면 아래 명령어를 사용한다.
 ```bash
-kubectl delete -f 01_pods/nginx-pod.yaml
+kubectl delete -f 02_pods/nginx-pod.yaml
 # 또는
 kubectl delete pod nginx-pod
 ```

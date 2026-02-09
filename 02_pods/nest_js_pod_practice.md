@@ -32,7 +32,7 @@ $ npm run start
 
 Nest.js 프로젝트 루트 디렉토리에 `Dockerfile`과 `.dockerignore` 파일을 작성한다.
 
-### ① Dockerfile 작성 (`01_pods/nestapp/Dockerfile`)
+### ① Dockerfile 작성 (`02_pods/nestapp/Dockerfile`)
 ```docker
 FROM node
 
@@ -48,7 +48,7 @@ EXPOSE 3000
 ENTRYPOINT [ "node", "dist/main.js" ]
 ```
 
-### ② .dockerignore 작성 (`01_pods/nestapp/.dockerignore`)
+### ② .dockerignore 작성 (`02_pods/nestapp/.dockerignore`)
 이미지 빌드 시 불필요한 파일을 제외한다.
 ```text
 node_modules
@@ -64,7 +64,7 @@ $ docker image ls  # nestapp 이미지 생성 확인
 
 ## 3. 쿠버네티스 파드 배포
 
-### ① 매니페스트 파일 작성 (`01_pods/nest-pod.yaml`)
+### ① 매니페스트 파일 작성 (`02_pods/nest-pod.yaml`)
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -81,7 +81,7 @@ spec:
 
 ### ② 파드 생성 및 상태 확인
 ```bash
-$ kubectl apply -f 01_pods/nest-pod.yaml
+$ kubectl apply -f 02_pods/nest-pod.yaml
 $ kubectl get pods
 ```
 

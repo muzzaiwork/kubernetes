@@ -33,11 +33,11 @@ spec:
 ### ① 프로젝트 준비 및 빌드
 실습을 위해 준비된 Spring Boot 프로젝트를 빌드하여 JAR 파일을 생성한다.
 
-- 예제 소스: `01_pods/springbootapp/`
-- Dockerfile: `01_pods/springbootapp/Dockerfile`
+- 예제 소스: `02_pods/springbootapp/`
+- Dockerfile: `02_pods/springbootapp/Dockerfile`
 
 ```bash
-$ cd 01_pods/springbootapp
+$ cd 02_pods/springbootapp
 $ ./gradlew clean build   # JAR 파일 빌드
 ```
 
@@ -52,7 +52,7 @@ $ docker image ls          # 이미지 생성 확인
 ### ③ 파드 생성 및 상태 확인 (ImagePullBackOff 발생)
 로컬 이미지를 사용하는 매니페스트 파일을 적용한다.
 
-`01_pods/spring-pod.yaml`
+`02_pods/spring-pod.yaml`
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -68,7 +68,7 @@ spec:
 ```
 
 ```bash
-$ kubectl apply -f 01_pods/spring-pod.yaml
+$ kubectl apply -f 02_pods/spring-pod.yaml
 $ kubectl get pods
 ```
 
@@ -97,7 +97,7 @@ spec:
 **재배포 절차:**
 ```bash
 $ kubectl delete pod spring-pod
-$ kubectl apply -f 01_pods/spring-pod.yaml
+$ kubectl apply -f 02_pods/spring-pod.yaml
 $ kubectl get pods  # STATUS가 Running인지 확인
 ```
 
