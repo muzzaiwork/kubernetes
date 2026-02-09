@@ -47,7 +47,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] [Nest.js 서버 Deployment & Service 실습](03_deployment_service/nest_js_deployment_practice.md)
 - [x] [Service 개념 이해](03_deployment_service/service_concept.md)
 - [x] [Service를 이용한 네트워크 노출 및 로드 밸런싱 실습](03_deployment_service/spring_boot_service_practice.md)
-- [ ] [**지금까지 배운 명령어 요약 정리 (Pod & Deployment)**](03_deployment_service/commands_summary_v2.md)
+- [x] [**지금까지 배운 명령어 요약 정리 (Pod & Deployment)**](03_deployment_service/commands_summary_v2.md)
 
 ### 4단계: 고급 설정 및 관리
 - [ ] ConfigMap & Secret (설정 관리)
