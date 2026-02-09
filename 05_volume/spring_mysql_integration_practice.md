@@ -329,7 +329,16 @@ $ kubectl get pods
 $ kubectl logs [파드명]
 ```
 
-![connection_error_logs](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/bf359aae-d41d-473a-941a-cf30f75b86f5/image.png)
+**예상되는 에러 로그:**
+```text
+2024-05-20 12:34:56.789 ERROR 1 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Exception during pool initialization.
+
+java.sql.SQLException: Access denied for user 'root'@'10.244.0.5' (using password: YES)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+    ...
+2024-05-20 12:34:56.790  WARN 1 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to btain Bean 'entityManagerFactory'; nested exception is javax.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.GenericJDBCException: Cannot open connection
+```
 
 ### 4) 다시 올바른 정보로 복구
 비밀번호를 원래대로(`password123`) 수정하고 다시 배포합니다.
