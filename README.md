@@ -1,46 +1,49 @@
 # Kubernetes 학습 가이드
 
-쿠버네티스(Kubernetes, K8s) 학습을 시작하신 것을 환영합니다! 이 프로젝트 폴더는 학습 과정을 기록하고 실습 예제를 관리하는 용도로 사용될 것입니다.
+쿠버네티스(Kubernetes, K8s) 학습을 시작한 것을 환영한다! 이 프로젝트는 쿠버네티스의 핵심 개념부터 실무 활용까지 단계별로 학습하고 실습 예제를 관리하는 공간이다.
 
 ## 📖 쿠버네티스란?
 
 ### ✅ 쿠버네티스(Kubernetes, K8s)란?
-쿠버네티스는 **다수의 컨테이너를 효율적으로 배포, 확장 및 관리**하기 위한 오픈 소스 시스템입니다.
+쿠버네티스는 **다수의 컨테이너를 효율적으로 배포, 확장 및 관리**하기 위한 오픈 소스 시스템이다.
 
-Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 가지고 있지만, 훨씬 더 거대한 규모의 클러스터를 관리할 수 있는 **Docker Compose의 확장판**이라고 이해하면 쉽습니다.
+Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 가지고 있지만, 훨씬 더 거대한 규모의 클러스터를 관리할 수 있는 **Docker Compose의 확장판**이라고 이해하면 쉽다.
 
 ### ✅ 쿠버네티스의 장점
-- **컨테이너 관리 자동화**: 배포, 확장, 업데이트 프로세스를 자동화합니다.
-- **부하 분산 (로드 밸런싱)**: 트래픽을 여러 컨테이너에 효율적으로 분산합니다.
-- **쉬운 스케일링**: 트래픽 증감에 따라 컨테이너 수를 쉽게 조절할 수 있습니다.
-- **셀프 힐링**: 장애가 발생한 컨테이너를 자동으로 재시작하거나 교체합니다.
+- **컨테이너 관리 자동화**: 배포, 확장, 업데이트 프로세스를 자동화한다.
+- **부하 분산 (로드 밸런싱)**: 트래픽을 여러 컨테이너에 효율적으로 분산한다.
+- **쉬운 스케일링**: 트래픽 증감에 따라 컨테이너 수를 쉽게 조절할 수 있다.
+- **셀프 힐링**: 장애가 발생한 컨테이너를 자동으로 재시작하거나 교체한다.
 
 ## 🏁 학습 로드맵
 
 ### 1단계: 기본 개념 파악
-- [x] 컨테이너와 쿠버네티스의 관계 (문서화 완료: [01_concepts/introduction.md](01_concepts/introduction.md))
-- [x] 매니페스트 파일의 이해 (문서화 완료: [01_concepts/manifest.md](01_concepts/manifest.md))
-- [x] 이미지 풀 정책(ImagePullPolicy) 이해 (문서화 완료: [01_concepts/image_pull_policy.md](01_concepts/image_pull_policy.md))
+- [x] [쿠버네티스 소개 및 관계 이해](01_concepts/introduction.md)
+- [x] [매니페스트(Manifest) 파일의 이해](01_concepts/manifest.md)
+- [x] [이미지 풀 정책(ImagePullPolicy) 이해](01_concepts/image_pull_policy.md)
 - [ ] 쿠버네티스 아키텍처 (Control Plane, Worker Node)
-- [ ] 기본 오브젝트 (Pod, Service, Deployment)
 
 ### 2단계: 실습 환경 구축
-- [x] Docker 설치 (확인됨: v27.3.1)
-- [x] 로컬 쿠버네티스 환경 구성 (Docker Desktop)
-- [x] `kubectl` CLI 도구 설치 및 익히기 (확인됨: v1.30.2)
+- [x] [로컬 쿠버네티스 환경 구성 (Docker Desktop + kubectl)](01_concepts/installation.md)
+- [x] `kubectl` CLI 도구 기본 사용법 숙지
 
 ### 3단계: 기본 오브젝트 실습
-- [x] Pod 개념 이해 (문서화 완료: [01_pods/pod_concept.md](01_pods/pod_concept.md))
-- [x] Nginx Pod 생성 및 관리 (예제: [01_pods/nginx-pod.yaml](01_pods/nginx-pod.yaml), 가이드: [01_pods/nginx_pod_practice.md](01_pods/nginx_pod_practice.md))
-- [x] Spring Boot Pod 생성 실습 (예제: [01_pods/spring-pod.yaml](01_pods/spring-pod.yaml), 가이드: [01_pods/spring_boot_pod_practice.md](01_pods/spring_boot_pod_practice.md))
-- [x] Spring Boot Pod 3개 띄워보기 (예제: [01_pods/spring-pod-triple.yaml](01_pods/spring-pod-triple.yaml), 가이드: [01_pods/spring_boot_3_pods_practice.md](01_pods/spring_boot_3_pods_practice.md))
-- [x] Nest.js Pod 생성 실습 (예제: [01_pods/nest-pod.yaml](01_pods/nest-pod.yaml), 가이드: [01_pods/nest_js_pod_practice.md](01_pods/nest_js_pod_practice.md))
-- [x] Next.js Pod 생성 실습 (예제: [01_pods/next-app/next-pod.yaml](01_pods/next-app/next-pod.yaml), 가이드: [01_pods/next_js_pod_practice.md](01_pods/next_js_pod_practice.md))
-- [x] Pod 디버깅 하는 방법 (가이드: [01_pods/pod_debugging.md](01_pods/pod_debugging.md))
-- [x] 지금까지 배운 주요 명령어 정리 (가이드: [01_pods/kubectl_commands_summary.md](01_pods/kubectl_commands_summary.md))
-- [x] Deployment 개념 이해 (문서화 완료: [02_deployments/deployment_concept.md](02_deployments/deployment_concept.md))
-- [x] Deployment를 이용한 스케일링 (예제: [02_deployments/spring-deployment.yaml](02_deployments/spring-deployment.yaml), 가이드: [02_deployments/spring_boot_deployment_practice.md](02_deployments/spring_boot_deployment_practice.md))
-- [ ] Service를 이용한 네트워크 노출 (`03_services/`)
+#### 🔹 Pod (파드)
+- [x] [Pod 개념 이해](01_pods/pod_concept.md)
+- [x] [Nginx Pod 생성 및 관리 실습](01_pods/nginx_pod_practice.md)
+- [x] [Spring Boot Pod 생성 및 이미지 풀 정책 실습](01_pods/spring_boot_pod_practice.md)
+- [x] [Spring Boot Pod 3개 띄우기 (수평 확장 맛보기)](01_pods/spring_boot_3_pods_practice.md)
+- [x] [Nest.js Pod 생성 실습](01_pods/nest_js_pod_practice.md)
+- [x] [Next.js Pod 생성 실습](01_pods/next_js_pod_practice.md)
+- [x] [Pod 디버깅 가이드 (describe, logs, exec)](01_pods/pod_debugging.md)
+- [x] [**주요 kubectl 명령어 요약 정리**](01_pods/kubectl_commands_summary.md)
+
+#### 🔹 Deployment (디플로이먼트)
+- [x] [Deployment 개념 및 구조 이해](02_deployments/deployment_concept.md)
+- [x] [Deployment를 이용한 Spring Boot 스케일링 실습](02_deployments/spring_boot_deployment_practice.md)
+
+#### 🔹 Service (서비스)
+- [ ] Service를 이용한 네트워크 노출 및 로드 밸런싱 (`03_services/`)
 
 ### 4단계: 고급 설정 및 관리
 - [ ] ConfigMap & Secret (설정 관리)
@@ -54,7 +57,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 
 ---
 
-## 🛠 필요한 도구 설치 안내
+## 🛠 필요한 도구
 - **Docker Desktop**: 컨테이너 런타임 및 로컬 쿠버네티스 환경
 - **kubectl**: 쿠버네티스 클러스터 제어 도구
 

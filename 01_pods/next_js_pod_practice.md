@@ -49,7 +49,7 @@
     $ docker build -t next-server .
     ```
     
-6. **이미지가 잘 생성됐는 지 확인하기**
+6. **이미지가 잘 생성됐는지 확인하기**
     
     ```bash
     $ docker image ls
@@ -79,13 +79,13 @@
     $ kubectl apply -f next-pod.yaml 
     ```
     
-9. **파드(Pod)가 잘 생성됐는 지 확인**
+9. **파드(Pod)가 잘 생성됐는지 확인**
     
     ```bash
     $ kubectl get pods
     ```
     
-10. **포트 포워딩으로 Next.js 서버가 실행됐는 지 확인**
+10. **포트 포워딩으로 Next.js 서버가 실행됐는지 확인**
     
     ```bash
     $ kubectl port-forward next-pod 3000:3000
