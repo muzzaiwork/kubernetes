@@ -3,11 +3,10 @@ kind: Service
 metadata:
   name: mysql-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: mysql-db
   ports:
     - protocol: TCP
       port: 3306
       targetPort: 3306
-      nodePort: 30004 # 30002가 이미 사용 중일 수 있으므로 30004로 설정 (실습 가이드에는 30002로 적혀있으나 충돌 방지)

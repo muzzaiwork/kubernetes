@@ -252,7 +252,7 @@ flowchart TD
             end
 
             SSVC["Service: spring-service (NodePort)"]
-            MSVC["Service: mysql-service (ClusterIP/NodePort)"]
+            MSVC["Service: mysql-service (ClusterIP)"]
 
             %% Traffic Flow
             SSVC -- "port: 8080 -> targetPort: 8080" --> Spring_Pods
