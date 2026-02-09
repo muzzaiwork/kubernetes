@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-env-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-env-app
+  template:
+    metadata:
+      labels:
+        app: spring-env-app
+    spec:
+      containers:
+        - name: spring-container
+          image: spring-server:env
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_ACCOUNT
+              value: jaeseong
+            - name: MY_PASSWORD
+              value: pwd1234

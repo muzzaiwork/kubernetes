@@ -13,9 +13,14 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
+    @org.springframework.beans.factory.annotation.Value("${MY_ACCOUNT:default}")
+    private String myAccount;
+
+    @org.springframework.beans.factory.annotation.Value("${MY_PASSWORD:default}")
+    private String myPassword;
+
     @GetMapping("/")
     public String home() {
-        System.out.println("Version 1.0"); // 추후 디버깅용
-        return "Version 1.0";
+        return "myAccount: " + myAccount + ", myPassword: " + myPassword;
     }
 }
