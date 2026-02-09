@@ -8,19 +8,34 @@
 .DS_Store
 Thumbs.db
 
-# Node
+# Node.js
 node_modules/
+**/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .npm
 .env
+**/.env
+
+# Next.js
+.next/
+**/.next/
+out/
+**/out/
+
+# Nest.js / General Build
+dist/
+**/dist/
 
 # Java / Gradle
 build/
+**/build/
 .gradle/
+**/.gradle/
 !gradle-wrapper.jar
 
 # Logs
 *.log
+**/*.log
 .output.txt
