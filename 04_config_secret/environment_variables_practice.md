@@ -68,7 +68,7 @@ spec:
             - containerPort: 8080
           env: # 환경변수 등록
             - name: MY_ACCOUNT
-              value: jaeseong
+              value: wonkyeom
             - name: MY_PASSWORD
               value: pwd1234
 ```
@@ -90,7 +90,7 @@ $ curl localhost:30001
 
 **실행 결과:**
 ```text
-myAccount: jaeseong, myPassword: pwd1234
+myAccount: wonkyeom, myPassword: pwd1234
 ```
 매니페스트 파일에 적어준 환경변수 값이 정상적으로 출력되는 것을 확인할 수 있다.
 
@@ -113,7 +113,7 @@ $ env | grep MY_
 
 **실행 결과:**
 ```text
-MY_ACCOUNT=jaeseong
+MY_ACCOUNT=wonkyeom
 MY_PASSWORD=pwd1234
 ```
 

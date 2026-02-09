@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-env-deployment
+  name: spring-config-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: spring-env-app
+      app: spring-config-app
   template:
     metadata:
       labels:
-        app: spring-env-app
+        app: spring-config-app
     spec:
       containers:
         - name: spring-container
@@ -20,6 +20,12 @@ spec:
             - containerPort: 8080
           env:
             - name: MY_ACCOUNT
-              value: wonkyeom
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-config
+                  key: my-account
             - name: MY_PASSWORD
-              value: pwd1234
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-config
+                  key: my-password

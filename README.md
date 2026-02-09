@@ -52,7 +52,8 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 
 ### 4단계: 고급 설정 및 관리
 - [x] [Spring Boot 환경변수 활용 실습](04_config_secret/environment_variables_practice.md)
-- [ ] ConfigMap & Secret (설정 관리)
+- [x] [ConfigMap을 활용한 설정 분리 실습](04_config_secret/configmap_practice.md)
+- [ ] Secret (비밀 데이터 관리)
 - [ ] Ingress (외부 트래픽 제어)
 - [ ] Storage (Volume, PV, PVC)
 
