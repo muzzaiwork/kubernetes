@@ -30,7 +30,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 
 ### 3단계: 기본 오브젝트 실습
 - [x] Pod 개념 이해 (문서화 완료: `01_pods/pod_concept.md`)
-- [x] Nginx Pod 생성 및 관리 (예제: `01_pods/nginx-pod.yaml`, 가이드: `01_pods/pod_creation.md`)
+- [x] Nginx Pod 생성 및 관리 (예제: `01_pods/nginx-pod.yaml`, 가이드: `01_pods/nginx_pod_practice.md`)
 - [x] Spring Boot Pod 생성 실습 (예제: `01_pods/spring-boot-pod.yaml`, 가이드: `01_pods/spring_boot_pod_practice.md`)
 - [ ] Deployment를 이용한 스케일링 (`02_deployments/`)
 - [ ] Service를 이용한 네트워크 노출 (`03_services/`)
