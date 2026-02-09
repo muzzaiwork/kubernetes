@@ -53,13 +53,67 @@ spec:                  # 상세 사양 (컨테이너 정보 등)
 2.  **localhost의 의미**: 여러분의 PC(호스트)에서 `localhost`는 파드가 아니라 **여러분 자신의 PC**를 가리킵니다. PC의 80번 포트에는 아무것도 떠 있지 않기 때문에 접속이 안 되는 것이 당연합니다.
 3.  **포트 맵핑 부재**: Docker에서는 `-p 80:80` 같은 옵션으로 호스트와 컨테이너 포트를 연결해주었지만, 쿠버네티스 파드 매니페스트의 `containerPort`는 그런 연결 기능을 수행하지 않습니다.
 
-### 🔍 임시로 접속 확인해보기 (Port Forwarding)
-서비스(Service)를 배우기 전, 파드가 잘 작동하는지 확인하고 싶다면 아래 명령어를 사용해 보세요.
+### 🔍 임시로 접속 확인해보기 1: Port Forwarding
+서비스(Service)를 배우기 전, PC에서 파드가 잘 작동하는지 확인하고 싶다면 아래 명령어를 사용해 보세요.
 ```bash
 # 호스트의 8080 포트를 파드의 80 포트로 연결
 kubectl port-forward pod/nginx-pod 8080:80
 ```
 이제 브라우저에서 `localhost:8080`으로 접속하면 Nginx 페이지가 보일 것입니다! (확인 후 터미널에서 `Ctrl + C`로 종료하세요.)
+
+#### 🖼️ Port Forwarding의 원리
+```mermaid
+graph LR
+    subgraph "사용자 PC (Host)"
+        A[브라우저/터미널]
+        L[localhost:8080]
+    end
+
+    subgraph "Kubernetes Cluster"
+        subgraph "Pod (nginx-pod)"
+            P[IP: 10.1.0.x<br/>Port: 80]
+        end
+    end
+
+    A --> L
+    L -- "kubectl port-forward로 터널링" --> P
+```
+
+---
+
+### 🔍 임시로 접속 확인해보기 2: 파드 내부로 접속 (exec)
+도커에서 컨테이너 내부로 접속할 때 `docker exec`를 사용하는 것처럼, 쿠버네티스에서도 `kubectl exec` 명령어를 사용하여 실행 중인 파드 내부 환경으로 들어갈 수 있습니다.
+
+```bash
+# nginx-pod 내부의 bash 쉘로 접속
+kubectl exec -it nginx-pod -- bash
+```
+
+파드 내부로 성공적으로 접속했다면, 파드 안에서 직접 Nginx에게 요청을 보내볼 수 있습니다.
+```bash
+# --- Pod 내부 접속 상태 ---
+curl localhost:80
+```
+
+#### 🖼️ 파드 내부 접속(exec) 및 내부 통신 원리
+```mermaid
+graph TD
+    subgraph "사용자 PC (Host)"
+        T[터미널 전용]
+    end
+
+    subgraph "Kubernetes Cluster"
+        subgraph "Pod (nginx-pod)"
+            direction TB
+            Shell[Bash Shell]
+            Nginx[Nginx Process]
+            
+            Shell -- "curl localhost:80" --> Nginx
+        end
+    end
+
+    T -- "kubectl exec로 원격 접속" --> Shell
+```
 
 ---
 
