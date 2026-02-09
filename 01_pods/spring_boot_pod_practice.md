@@ -109,18 +109,45 @@ kubectl apply -f 01_pods/spring-pod.yaml
 pod/spring-pod created
 ```
 
-### ② 상태 확인
-Spring Boot는 Java 애플리케이션이므로 Nginx보다 기동 시간이 조금 더 걸릴 수 있습니다. `STATUS`가 `Running`이 될 때까지 기다립니다.
+### ② 상태 확인 및 트래블슈팅 (ImagePullBackOff)
+
+파드를 생성한 후 상태를 확인해 봅니다. 처음 생성 시 `STATUS`가 `ImagePullBackOff` 또는 `ErrImagePull`로 뜰 수 있습니다.
+
 ```bash
 kubectl get pods
 ```
 
-**실행 결과 (예시):**
+**실행 결과 (에러 발생 시):**
 ```text
-NAME         READY   STATUS    RESTARTS   AGE
-nginx-pod    1/1     Running   0          25m
-spring-pod   1/1     Running   0          20s
+NAME         READY   STATUS             RESTARTS   AGE
+spring-pod   0/1     ImagePullBackOff   0          10s
 ```
+
+#### ❓ 왜 ImagePullBackOff가 발생하나요?
+이는 쿠버네티스의 **이미지 풀 정책(Image Pull Policy)** 때문입니다. 태그 없이 `image: spring-server`라고만 적으면 쿠버네티스는 기본적으로 원격 저장소(Docker Hub 등)에서 이미지를 찾으려 시도합니다. 하지만 `spring-server`는 우리가 로컬에서만 만든 이미지이므로 원격에는 존재하지 않아 에러가 발생합니다.
+
+- **상세 원인 및 정책 종류**: [이미지 풀 정책(ImagePullPolicy) 이해하기](../01_concepts/image_pull_policy.md)
+
+#### ✅ 해결 방법: 매니페스트 수정
+로컬 이미지를 사용하려면 `imagePullPolicy: IfNotPresent`를 명시해야 합니다. (이미 `spring-pod.yaml`에 반영되어 있습니다.)
+
+```yaml
+spec:
+  containers:
+    - name: spring-container
+      image: spring-server
+      imagePullPolicy: IfNotPresent  # 로컬에 있으면 가져오지 않음
+```
+
+#### 🔄 재배포하기
+정책을 확인하거나 수정한 후, 기존 파드를 삭제하고 다시 생성합니다.
+
+```bash
+kubectl delete pod spring-pod
+kubectl apply -f 01_pods/spring-pod.yaml
+```
+
+정상적으로 처리되면 `STATUS`가 `Running`으로 변경됩니다.
 
 ### ③ 임시 접속 확인 (Port Forwarding)
 호스트의 8081 포트를 파드의 8080 포트로 연결해 봅니다.
@@ -138,49 +165,7 @@ Forwarding from [::1]:8081 -> 8080
 
 ---
 
-## 4. 왜 ImagePullBackOff가 발생하나요? (이미지 풀 정책)
-
-이전에 Spring Boot 프로젝트를 이미지로 빌드해서 파드로 띄웠을 때, `ImagePullBackOff`라는 에러가 발생할 수 있습니다. 이는 쿠버네티스의 **이미지 풀 정책(Image Pull Policy)** 때문입니다.
-
-- 상세 설명: [이미지 풀 정책 이해하기](../01_concepts/image_pull_policy.md)
-
-### ① 이미지 풀 정책 (Image Pull Policy)이란?
-쿠버네티스가 매니페스트 파일을 읽어 파드를 생성할 때, 이미지를 어떻게 가져올(Pull) 것인지에 대한 규칙입니다.
-
-1. **`Always`**: 로컬에 이미지가 있더라도 무조건 원격 레지스트리(Docker Hub 등)에서 새로 가져옵니다.
-2. **`IfNotPresent`**: 로컬에 이미지가 있는지 먼저 확인하고, 없을 때만 원격에서 가져옵니다. (권장)
-3. **`Never`**: 무조건 로컬에 있는 이미지명만 사용하며 원격에서 가져오지 않습니다.
-
-### ② 기본 동작 방식 (Default Behavior)
-`imagePullPolicy`를 생략했을 때 쿠버네티스는 다음과 같이 판단합니다.
-
-- 이미지 태그가 `:latest`이거나 아예 없는 경우: **`Always`**로 설정됨
-- 이미지 태그가 특정 버전(예: `:v1`)인 경우: **`IfNotPresent`**로 설정됨
-
-따라서 우리가 태그 없이 `image: spring-server`라고만 적으면 쿠버네티스는 `spring-server:latest`를 원격 저장소에서 찾으려 시도하고, 찾지 못해 `ImagePullBackOff` 에러를 띄우게 됩니다.
-
-### ③ 해결 방법
-로컬에서 빌드한 이미지를 사용하려면 다음과 같이 정책을 명시해 주어야 합니다.
-
-```yaml
-spec:
-  containers:
-    - name: spring-container
-      image: spring-server
-      imagePullPolicy: IfNotPresent
-```
-
-정책을 수정한 후 기존 파드를 삭제하고 다시 생성하면 정상적으로 실행됩니다.
-
-```bash
-$ kubectl delete pod spring-pod
-$ kubectl apply -f 01_pods/spring-pod.yaml
-$ kubectl get pods
-```
-
----
-
-## 5. Spring Boot 서버 응답 확인하기
+## 4. Spring Boot 서버 응답 확인하기
 
 서버가 정상적으로 기동되었다면 아래 두 가지 방법으로 응답을 확인할 수 있습니다.
 
@@ -200,7 +185,7 @@ $ kubectl port-forward pod/spring-pod 8081:8080
 
 ---
 
-## 6. Nginx 파드 vs Spring Boot 파드 비교
+## 5. Nginx 파드 vs Spring Boot 파드 비교
 
 | 항목 | Nginx 파드 | Spring Boot 파드 |
 | :--- | :--- | :--- |
@@ -210,7 +195,7 @@ $ kubectl port-forward pod/spring-pod 8081:8080
 
 ---
 
-## 5. 파드 내부에서 통신해보기 (고급)
+## 6. 파드 내부에서 통신해보기 (고급)
 
 쿠버네티스 클러스터 안에서는 파드끼리 서로의 IP를 통해 통신할 수 있습니다. 
 
