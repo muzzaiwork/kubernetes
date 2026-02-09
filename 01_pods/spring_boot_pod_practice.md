@@ -27,7 +27,45 @@ spec:
 
 ---
 
-## 2. 실습 진행
+## 2. [심화] 직접 만든 Spring Boot 이미지 사용하기
+
+기존에는 이미 만들어진 이미지를 사용했지만, 직접 작성한 코드를 Docker 이미지로 만들어서 띄울 수도 있습니다.
+
+### ① Dockerfile 작성
+Spring Boot 프로젝트 루트에 아래와 같이 `Dockerfile`을 작성합니다.
+
+```dockerfile
+# 1단계: 빌드용 이미지
+FROM eclipse-temurin:17-jdk-alpine AS build
+WORKDIR /app
+COPY . .
+RUN ./gradlew build -x test
+
+# 2단계: 실행용 이미지
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+CMD ["java", "-jar", "app.jar"]
+```
+
+### ② 이미지 빌드
+```bash
+docker build -t my-spring-app:v1 .
+```
+
+### ③ 쿠버네티스 매니페스트 수정
+직접 만든 이미지를 사용하도록 `image` 필드를 수정합니다.
+```yaml
+spec:
+  containers:
+    - name: spring-boot-container
+      image: my-spring-app:v1  # 직접 빌드한 이미지 이름
+      imagePullPolicy: Never    # 로컬 이미지를 우선 사용하도록 설정 (Docker Desktop 환경)
+```
+
+---
+
+## 3. 실습 진행
 
 ### ① 파드 생성
 ```bash
@@ -67,7 +105,7 @@ Forwarding from [::1]:8081 -> 8080
 
 ---
 
-## 3. Nginx 파드 vs Spring Boot 파드 비교
+## 4. Nginx 파드 vs Spring Boot 파드 비교
 
 | 항목 | Nginx 파드 | Spring Boot 파드 |
 | :--- | :--- | :--- |
@@ -77,7 +115,7 @@ Forwarding from [::1]:8081 -> 8080
 
 ---
 
-## 4. 파드 내부에서 통신해보기 (고급)
+## 5. 파드 내부에서 통신해보기 (고급)
 
 쿠버네티스 클러스터 안에서는 파드끼리 서로의 IP를 통해 통신할 수 있습니다. 
 
