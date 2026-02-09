@@ -1,0 +1,5 @@
+<data-source name="Kubernetes MySQL" uuid="mysql-k8s-local">
+  <database-info product="MySQL" version="8.0.x" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.x.x" dbms="MYSQL" exact-version="8.0.x" />
+  <user-name>root</user-name>
+  <schema-mapping />
+</data-source>
