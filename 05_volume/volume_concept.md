@@ -34,7 +34,39 @@ graph TD
 **파드 외부의 공간 일부를 볼륨으로 활용하는 방식**이다. 이 방식은 파드가 삭제되는 것과 상관없이 데이터를 영구적으로 사용할 수 있다는 장점이 있다. 현업에서는 주로 이 방식을 활용한다.
 
 - **클러스터 내부 저장소 활용**: 쿠버네티스 노드의 특정 경로를 공유하여 사용한다.
+
+```mermaid
+graph TD
+    subgraph "Worker Node"
+        subgraph "Pod"
+            Container[Container]
+        end
+        Path["/mnt/data (Node Path)"]
+    end
+    
+    Container <--> Path
+    
+    style Path fill:#fff,stroke:#333,stroke-dasharray: 5 5
+```
+
 - **외부 저장소 활용**: AWS EBS, Google Cloud Persistent Disk, NFS 등 외부 스토리지 서비스를 연결하여 사용한다.
+
+```mermaid
+graph LR
+    subgraph "Kubernetes Cluster"
+        subgraph "Worker Node"
+            subgraph "Pod"
+                Container[Container]
+            end
+        end
+    end
+
+    subgraph "External Storage"
+        EBS[(AWS EBS / Cloud Disk)]
+    end
+
+    Container <--> EBS
+```
 
 ---
 
