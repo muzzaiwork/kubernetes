@@ -55,7 +55,8 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] [ConfigMap을 활용한 설정 분리 실습](04_config_secret/configmap_practice.md)
 - [x] [Secret을 활용한 민감 데이터 관리 실습](04_config_secret/secret_practice.md)
 - [ ] Ingress (외부 트래픽 제어)
-- [ ] Storage (Volume, PV, PVC)
+- [x] [Volume 개념 이해 (PV, PVC)](05_volume/volume_concept.md)
+- [ ] Storage 실습 (Volume, PV, PVC)
 
 ### 5단계: 운영 및 모니터링
 - [ ] 리소스 제한 (Requests & Limits)
