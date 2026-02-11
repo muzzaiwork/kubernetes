@@ -66,6 +66,9 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [ ] 상태 확인 (Liveness & Readiness Probes)
 - [ ] Helm (패키지 매니저) 활용
 
+### 6단계: 클라우드 환경 배포
+- [ ] [AWS EC2에서 쿠버네티스를 활용해 배포하기](06_aws_deployment/aws_ec2_k8s_deployment.md)
+
 ---
 
 ## 🛠 필요한 도구
