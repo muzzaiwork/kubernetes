@@ -12,62 +12,13 @@
 - **데이터베이스**: 클러스터 내부의 MySQL 파드 사용
 - **특징**: 설정이 간단하지만, 실제 운영 환경과는 거리가 있음
 
-```mermaid
-flowchart TD
-    subgraph Computer [Host Computer]
-        subgraph K8s [Kubernetes Cluster]
-            Spring_Pod[Spring Pod]
-            MySQL_Pod[MySQL Pod]
-            Spring_Pod -- "Local Connection" --> MySQL_Pod
-        end
-        Docker_Engine[Docker Engine] -- "Local Push/Pull" --> Spring_Pod
-    end
-```
+![local_architecture.png](local_architecture.png)
 
 ### ☁️ 클라우드 배포 환경 아키텍처 (RDS, ECR 활용)
 - **이미지 저장소**: **AWS ECR** (관리형 컨테이너 레지스트리)
 - **데이터베이스**: **AWS RDS** (관리형 DB 서비스)
 - **특징**: 보안성이 높고 데이터 보존 및 이미지 관리가 용이함
-
-```mermaid
-flowchart TD
-    subgraph Internet ["Public Internet"]
-        User(("User"))
-    end
-
-    subgraph AWS_Cloud ["AWS Cloud"]
-        ELB["AWS Elastic Load Balancer"]
-        
-        subgraph VPC ["VPC"]
-            subgraph K8s_Cluster ["Kubernetes Cluster / EC2"]
-                Spring_Pod1["Spring Pod"]
-                Spring_Pod2["Spring Pod"]
-            end
-            
-            RDS[("AWS RDS MySQL")]
-        end
-        
-        ECR["AWS ECR Registry"]
-    end
-
-    %% Flow
-    User -- "1. Request (Port 80)" --> ELB
-    ELB -- "2. Load Balancing" --> Spring_Pod1
-    ELB -- "2. Load Balancing" --> Spring_Pod2
-    
-    Spring_Pod1 -- "3. Data Query" --> RDS
-    Spring_Pod2 -- "3. Data Query" --> RDS
-    
-    ECR -- "4. Image Pull" -.-> K8s_Cluster
-    
-    %% Styling
-    style AWS_Cloud fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style VPC fill:#ffffff,stroke:#333,stroke-dasharray: 5 5
-    style K8s_Cluster fill:#e1f5fe,stroke:#01579b
-    style RDS fill:#fff3e0,stroke:#e65100
-    style ECR fill:#e8f5e9,stroke:#1b5e20
-    style ELB fill:#e0f2f1,stroke:#004d40
-```
+![cloud_architecture.png](cloud_architecture.png)
 
 로컬 환경에서의 아키텍처와의 차이점은 크게 2가지이다.
 

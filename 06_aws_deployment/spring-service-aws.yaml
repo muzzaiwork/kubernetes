@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+# Service: 파드들을 네트워크에 노출시켜 외부에서 접근 가능하게 합니다.
+metadata:
+  name: spring-service-aws
+spec:
+  # 클라우드 환경에서는 LoadBalancer 타입을 사용하여 AWS ELB를 자동으로 생성할 수 있습니다.
+  # 만약 k3s 단일 노드(EC2)에서 간단히 테스트한다면 NodePort를 유지할 수도 있습니다.
+  type: LoadBalancer 
+  selector:
+    app: backend-app
+  ports:
+    - protocol: TCP
+      port: 80         # 로드밸런서가 외부에서 받을 포트
+      targetPort: 8080 # 파드 내부의 애플리케이션 포트

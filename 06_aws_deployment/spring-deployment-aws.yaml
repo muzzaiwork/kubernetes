@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment: 애플리케이션의 배포 상태를 정의합니다.
+metadata:
+  name: spring-deployment-aws
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+        - name: spring-container
+          # image: AWS ECR에 푸시한 이미지 주소를 입력합니다.
+          # 예: [AWS_ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com/spring-server:latest
+          image: YOUR_ECR_REPOSITORY_URL/spring-server:latest
+          imagePullPolicy: Always # 클라우드 환경에서는 항상 최신 이미지를 가져오도록 설정하는 것이 좋습니다.
+          ports:
+            - containerPort: 8080
+          env:
+            # RDS 엔드포인트 및 접속 정보를 주입합니다.
+            - name: DB_HOST
+              value: "YOUR_RDS_ENDPOINT" # 예: database-1.cxxxxxxx.ap-northeast-2.rds.amazonaws.com
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_NAME
+              value: "kub_practice"
+            - name: DB_USERNAME
+              value: "admin"
+            - name: DB_PASSWORD
+              value: "your_rds_password"
+          # Readiness/Liveness Probe 설정 (운영 환경 필수)
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10

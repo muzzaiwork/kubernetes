@@ -71,6 +71,8 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [x] [EC2에서 도커(Docker) 및 k3s 설치하기](06_aws_deployment/k3s_installation_guide.md)
 - [x] [디플로이먼트, 서비스를 활용해 웹 서버(Nginx) 띄워보기](06_aws_deployment/nginx_deployment_practice.md)
 - [ ] [AWS EC2에서 쿠버네티스를 활용해 배포하기](06_aws_deployment/aws_ec2_k8s_deployment.md)
+- [x] [백엔드(Spring Boot) 서버 배포 및 DB 연동 (RDS, ECR)](06_aws_deployment/spring_rds_ecr_deployment_practice.md)
+- [x] [AWS RDS 및 ECR 상세 설정 가이드](06_aws_deployment/rds_ecr_configuration_guide.md)
 
 ---
 
