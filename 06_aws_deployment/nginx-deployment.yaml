@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+# Deployment 기본 정보
+metadata:
+  name: nginx-deployment # Deployment 이름
+# Deployment 세부 정보
+spec:
+  replicas: 3 # 생성할 파드의 복제본 개수
+  selector:
+    matchLabels:
+      app: nginx # 아래 template에서 정의한 레이블과 일치하는 파드를 선택
+  # 배포할 Pod 정의
+  template:
+    metadata:
+      labels: # 레이블 (= 카테고리)
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-container # 컨테이너 이름
+        image: nginx # 사용할 이미지
+        ports:
+        - containerPort: 80 # 컨테이너 내부 포트
