@@ -73,6 +73,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 - [ ] [AWS EC2에서 쿠버네티스를 활용해 배포하기](06_aws_deployment/aws_ec2_k8s_deployment.md)
 - [x] [백엔드(Spring Boot) 서버 배포 및 DB 연동 (RDS, ECR)](06_aws_deployment/spring_rds_ecr_deployment_practice.md)
 - [x] [AWS RDS 및 ECR 상세 설정 가이드](06_aws_deployment/rds_ecr_configuration_guide.md)
+- [x] [**[부록] 로컬 환경 AWS CLI 설치 및 설정 가이드**](06_aws_deployment/aws_cli_installation_guide.md)
 
 ---
 
