@@ -13,12 +13,20 @@
    - DB 인스턴스 식별자: `database-1`
    - 마스터 사용자 이름: `admin`
    - 마스터 암호: `password123` (실습용)
+
+![RDS 생성 설정](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/6b0d9e8c-8b8a-4d4a-9b8c-8b8a4d4a9b8c/image.png)
+*참고: RDS 생성 시 엔진 버전과 인스턴스 사양을 확인하세요.*
+
 4. **연결**:
    - 퍼블릭 액세스: `예` (로컬 테스트를 위해 잠시 허용하거나, 보안 그룹으로 제어)
    - VPC 보안 그룹: `새로 생성` 또는 `기존 선택`
 
 ### ✅ 보안 그룹 설정 (매우 중요)
 EC2 인스턴스(k3s)에서 RDS에 접속하기 위해서는 RDS의 보안 그룹에서 인바운드 규칙을 추가해야 합니다.
+
+![RDS 보안 그룹 설정](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/7c1e8f9d-9c9a-4e5b-ac9d-9c9a4e5b8c8d/image.png)
+*참고: 인바운드 규칙에 3306 포트를 열어주어야 합니다.*
+
 - **유형**: `MYSQL/Aurora`
 - **프로토콜**: `TCP`
 - **포트 범위**: `3306`
@@ -31,9 +39,15 @@ EC2 인스턴스(k3s)에서 RDS에 접속하기 위해서는 RDS의 보안 그�
 ### ✅ 리포지토리 생성
 1. AWS ECR 콘솔에서 `리포지토리 생성` 클릭
 2. 리포지토리 이름: `spring-server`
+
+![ECR 리포지토리 생성](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/8d2f9e0a-0a0b-4c0c-8d2f-9e0a0b4c0c0c/image.png)
+
 3. 생성 완료 후 `푸시 명령 보기`를 통해 로그인 및 푸시 명령어를 확인할 수 있습니다.
 
 ### ✅ 로컬에서 ECR로 이미지 푸시
+![ECR 푸시 명령](https://prod-files-secure.s3.us-west-2.amazonaws.com/e35a8144-c5ff-40f0-b123-384a331e35bb/9e3f0a1b-1b1c-4d1d-9e3f-0a1b1c1d1d1d/image.png)
+*참고: AWS 콘솔의 '푸시 명령 보기' 버튼을 누르면 위와 같은 안내가 나옵니다.*
+
 ```bash
 # 1. AWS CLI 로그인을 통한 인증 토큰 가져오기
 $ aws ecr get-login-password --region [REGION] | docker login --username AWS --password-stdin [AWS_ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com
