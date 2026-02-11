@@ -6,70 +6,80 @@
 
 ## 1. AWS RDS(MySQL) 설정
 
-### ✅ RDS 인스턴스 생성
-1. **엔진 옵션**: `MySQL` 선택
-2. **템플릿**: `프리 티어` (학습용)
-3. **설정**:
-   - DB 인스턴스 식별자: `database-1`
-   - 마스터 사용자 이름: `admin`
-   - 마스터 암호: `password123` (실습용)
+### 🛠️ RDS 인스턴스 생성 UI 흐름도
 
-> **💡 화면 가이드**: AWS 콘솔에서 '데이터베이스 생성' 클릭 후, [표준 생성] -> [MySQL] -> [템플릿: 프리 티어] 순서로 선택하세요. 하단의 [설정] 섹션에서 위 정보를 입력합니다.
-
-4. **연결**:
-   - 퍼블릭 액세스: `예` (로컬 테스트를 위해 잠시 허용하거나, 보안 그룹으로 제어)
-   - VPC 보안 그룹: `새로 생성` 또는 `기존 선택`
-
-### ✅ 보안 그룹 설정 (매우 중요)
-EC2 인스턴스(k3s)에서 RDS에 접속하기 위해서는 RDS의 보안 그룹에서 인바운드 규칙을 추가해야 합니다.
-
-```text
-[보안 그룹 인바운드 규칙 설정 예시]
-- 유형: MYSQL/Aurora
-- 프로토콜: TCP
-- 포트 범위: 3306
-- 소스: 사용자 지정 (EC2 인스턴스의 보안 그룹 ID를 입력하세요)
+```mermaid
+graph TD
+    Start["AWS RDS 콘솔"] --> Create["[데이터베이스 생성] 버튼 클릭"]
+    Create --> Method["방법: [표준 생성] 선택"]
+    Method --> Engine["엔진: [MySQL] 선택"]
+    Engine --> Template["템플릿: [프리 티어] 선택"]
+    Template --> Settings["[설정] 섹션 입력"]
+    Settings --> Auth["[연결] - [퍼블릭 액세스: 예] 설정"]
+    Auth --> Final["하단 [데이터베이스 생성] 클릭"]
 ```
 
-> **💡 화면 가이드**: RDS 상세 페이지의 [연결 및 보안] 탭에서 'VPC 보안 그룹' 링크를 클릭합니다. 보안 그룹 상세 페이지 하단의 [인바운드 규칙 편집] 버튼을 눌러 위 규칙을 추가하세요.
+### ✅ RDS 인스턴스 상세 설정 정보
 
-- **유형**: `MYSQL/Aurora`
-- **프로토콜**: `TCP`
-- **포트 범위**: `3306`
-- **소스**: `EC2 인스턴스의 보안 그룹 ID` 또는 `VPC 대역 IP`
+| 구분 | 항목 | 설정값 |
+| :--- | :--- | :--- |
+| **엔진** | 엔진 옵션 | MySQL |
+| **템플릿** | 템플릿 종류 | 프리 티어 (학습용) |
+| **설정** | DB 인스턴스 식별자 | `database-1` |
+| **설정** | 마스터 사용자 이름 | `admin` |
+| **설정** | 마스터 암호 | `password123` |
+| **연결** | 퍼블릭 액세스 | **예** (외부 접속 허용) |
 
 ---
 
-## 2. AWS ECR(이미지 저장소) 설정
+## 2. 보안 그룹(Security Group) 설정
 
-### ✅ 리포지토리 생성
-1. AWS ECR 콘솔에서 `리포지토리 생성` 클릭
-2. 리포지토리 이름: `spring-server`
+RDS에 접근할 수 있도록 네트워크 대문을 여는 과정입니다.
 
-> **💡 화면 가이드**: ECR 서비스 메인화면에서 주황색 [리포지토리 생성] 버튼을 클릭하고, [가시성 설정: Private] 확인 후 리포지토리 이름을 입력하고 하단의 [리포지토리 생성]을 누릅니다.
+### 🛠️ 보안 그룹 인바운드 규칙 설정 흐름
 
-3. 생성 완료 후 `푸시 명령 보기`를 통해 로그인 및 푸시 명령어를 확인할 수 있습니다.
-
-### ✅ 로컬에서 ECR로 이미지 푸시
-> **💡 화면 가이드**: ECR 리포지토리 목록에서 생성한 `spring-server`를 선택하면 우측 상단에 [푸시 명령 보기] 버튼이 있습니다. 이를 클릭하면 각 운영체제(macOS/Linux/Windows)별 명령어가 팝업으로 나타납니다.
-
-```bash
-# 1. AWS CLI 로그인을 통한 인증 토큰 가져오기
-$ aws ecr get-login-password --region [REGION] | docker login --username AWS --password-stdin [AWS_ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com
-
-# 2. 이미지 빌드 (이미 있다면 생략)
-$ docker build -t spring-server .
-
-# 3. 이미지 태그 설정 (ECR 주소에 맞게 태깅)
-$ docker tag spring-server:latest [AWS_ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com/spring-server:latest
-
-# 4. 이미지 푸시
-$ docker push [AWS_ACCOUNT_ID].dkr.ecr.[REGION].amazonaws.com/spring-server:latest
+```mermaid
+graph LR
+    RDS["RDS 상세 페이지"] --> SecTab["[연결 및 보안] 탭"]
+    SecTab --> SGLink["VPC 보안 그룹 링크 클릭"]
+    SGLink --> Edit["[인바운드 규칙 편집]"]
+    Edit --> Add["[규칙 추가] 버튼 클릭"]
+    Add --> Save["설정 후 [규칙 저장]"]
 ```
+
+### ✅ 인바운드 규칙 입력값
+
+| 유형 | 프로토콜 | 포트 범위 | 소스 | 비고 |
+| :--- | :--- | :--- | :--- | :--- |
+| **MYSQL/Aurora** | TCP | 3306 | `0.0.0.0/0` 또는 `Anywhere` | (테스트용) 전체 허용 |
+| **MYSQL/Aurora** | TCP | 3306 | `sg-xxxxxx` (EC2 보안그룹 ID) | **(권장)** EC2만 허용 |
 
 ---
 
-## 3. 쿠버네티스(k3s) 배포 설정
+## 3. AWS ECR(이미지 저장소) 설정
+
+### 🛠️ ECR 리포지토리 생성 및 푸시 흐름
+
+```mermaid
+graph TD
+    ECR["AWS ECR 콘솔"] --> Create["[리포지토리 생성] 클릭"]
+    Create --> Name["이름: spring-server 입력"]
+    Name --> Done["[리포지토리 생성] 완료"]
+    Done --> PushBtn["우측 상단 [푸시 명령 보기] 클릭"]
+    PushBtn --> Popup["운영체제별 명령어 팝업 확인"]
+```
+
+### ✅ 로컬에서 ECR로 이미지 푸시 과정
+팝업창에 나타나는 4개의 명령어를 순서대로 터미널에 입력하세요.
+
+1.  **인증**: AWS CLI를 통해 ECR에 로그인합니다.
+2.  **빌드**: Docker 이미지를 생성합니다.
+3.  **태그**: ECR 주소에 맞게 이미지에 이름을 붙입니다.
+4.  **푸시**: ECR 저장소로 이미지를 전송합니다.
+
+---
+
+## 4. 쿠버네티스(k3s) 배포 설정
 
 ### ✅ 환경 변수 주입 (Deployment)
 애플리케이션이 RDS에 접속할 수 있도록 `DB_HOST`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD` 등을 환경 변수로 설정합니다.
