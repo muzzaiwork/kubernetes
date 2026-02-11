@@ -31,23 +31,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    subgraph Internet [Public Internet]
-        User((User))
+    subgraph Internet ["Public Internet"]
+        User(("User"))
     end
 
-    subgraph AWS_Cloud [AWS Cloud]
-        ELB[AWS Elastic Load Balancer]
+    subgraph AWS_Cloud ["AWS Cloud"]
+        ELB["AWS Elastic Load Balancer"]
         
-        subgraph VPC [VPC]
-            subgraph K8s_Cluster [Kubernetes Cluster / EC2]
-                Spring_Pod1[Spring Pod]
-                Spring_Pod2[Spring Pod]
+        subgraph VPC ["VPC"]
+            subgraph K8s_Cluster ["Kubernetes Cluster / EC2"]
+                Spring_Pod1["Spring Pod"]
+                Spring_Pod2["Spring Pod"]
             end
             
-            RDS[(AWS RDS MySQL)]
+            RDS[("AWS RDS MySQL")]
         end
         
-        ECR[AWS ECR Registry]
+        ECR["AWS ECR Registry"]
     end
 
     %% Flow
