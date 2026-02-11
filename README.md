@@ -68,6 +68,7 @@ Docker Compose와 유사하게 다수의 컨테이너를 관리하는 목적을 
 
 ### 6단계: 클라우드 환경 배포
 - [x] [k3s란? (경량화된 쿠버네티스)](06_aws_deployment/k3s_introduction.md)
+- [x] [EC2에서 도커(Docker) 및 k3s 설치하기](06_aws_deployment/k3s_installation_guide.md)
 - [ ] [AWS EC2에서 쿠버네티스를 활용해 배포하기](06_aws_deployment/aws_ec2_k8s_deployment.md)
 
 ---
